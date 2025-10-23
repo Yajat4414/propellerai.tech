@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propeller AI - Your Intelligent Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        .propeller-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .animated-gradient {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .hover-float:hover {
+            animation: float 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="font-['Inter'] bg-black text-white overflow-x-hidden">
+    <!-- Navbar -->
+    <nav class="fixed top-0 w-full z-50 glass-effect">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img src="assets/images/logo.png" alt="Propeller" class="w-10 h-10 rounded-xl">
+                <span class="propeller-font text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Propeller</span>
+            </div>
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="text-gray-300 hover:text-white transition-colors">Features</a>
+                <a href="#avatars" class="text-gray-300 hover:text-white transition-colors">Avatars</a>
+            </div>
+            <a href="/auth" class="px-6 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+                Get Started
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+        <!-- Animated Background -->
+        <div class="absolute inset-0 bg-gradient-to-br from-gray-900 via-purple-900/20 to-black"></div>
+        <div class="absolute inset-0">
+            <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/30 rounded-full filter blur-[128px]"></div>
+            <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/30 rounded-full filter blur-[128px]"></div>
+        </div>
+        
+        <div class="relative z-10 max-w-6xl mx-auto px-6 py-20 text-center">
+            <div class="fade-in-up opacity-0">
+                <div class="inline-block px-4 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full mb-8">
+                    <span class="text-indigo-300 text-sm font-semibold">✨ Powered by GPT-4o & DeepSeek</span>
+                </div>
+            </div>
+            
+            <h1 class="propeller-font text-6xl md:text-8xl font-black mb-6 fade-in-up opacity-0 delay-100">
+                <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                    Meet Propeller
+                </span>
+            </h1>
+            
+            <p class="text-2xl md:text-3xl text-gray-300 mb-4 fade-in-up opacity-0 delay-200">
+                Your Intelligent AI Companion
+            </p>
+            
+            <p class="text-lg text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed fade-in-up opacity-0 delay-300">
+                Experience next-generation AI conversations with specialized avatars, vision capabilities, and lightning-fast responses. 
+                Built for creators, learners, and professionals.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16 fade-in-up opacity-0 delay-400">
+                <a href="/auth" class="group px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/50 transition-all transform hover:scale-105 flex items-center space-x-2">
+                    <span>Start Chatting Free</span>
+                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </a>
+                <a href="#features" class="px-8 py-4 glass-effect rounded-xl font-semibold text-lg hover:bg-white/10 transition-all transform hover:scale-105">
+                    Explore Features
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+            <div class="animate-bounce">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-6 relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-black via-purple-900/5 to-black"></div>
+        
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center mb-20">
+                <h2 class="propeller-font text-5xl md:text-6xl font-black mb-6">
+                    <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+                        Powerful Features
+                    </span>
+                </h2>
+                <p class="text-xl text-gray-400 max-w-2xl mx-auto">
+                    Everything you need for intelligent AI assistance
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="group p-8 glass-effect rounded-2xl hover:bg-white/10 transition-all hover-float cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">5 AI Avatars</h3>
+                    <p class="text-gray-400 mb-4">Specialized assistants for fitness, education, career, finance, and cooking - each personalized to your needs.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-xs">Fitness</span>
+                        <span class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs">Learning</span>
+                        <span class="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs">Career</span>
+                    </div>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="group p-8 glass-effect rounded-2xl hover:bg-white/10 transition-all hover-float cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Vision AI (GPT-4o)</h3>
+                    <p class="text-gray-400 mb-4">Upload images for intelligent analysis. Automatically switches to GPT-4o for vision tasks.</p>
+                    <div class="flex items-center text-sm text-purple-400">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        2 uploads/day free
+                    </div>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="group p-8 glass-effect rounded-2xl hover:bg-white/10 transition-all hover-float cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Lightning Fast</h3>
+                    <p class="text-gray-400 mb-4">DeepSeek-powered responses in under 2 seconds. No more waiting for answers.</p>
+                    <div class="text-sm text-blue-400">⚡ Optimized performance</div>
+                </div>
+                
+                <!-- Feature 4 -->
+                <div class="group p-8 glass-effect rounded-2xl hover:bg-white/10 transition-all hover-float cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Chat History</h3>
+                    <p class="text-gray-400 mb-4">Never lose a conversation. Auto-saved and synced across all your devices.</p>
+                    <div class="text-sm text-green-400">💾 Auto-save every 30s</div>
+                </div>
+                
+                <!-- Feature 5 -->
+                <div class="group p-8 glass-effect rounded-2xl hover:bg-white/10 transition-all hover-float cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-orange-600 to-red-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Multi-Language</h3>
+                    <p class="text-gray-400 mb-4">Communicate in 50+ languages including English, Spanish, French, Chinese, Japanese, and more.</p>
+                    <div class="text-sm text-orange-400">🌍 Global support</div>
+                </div>
+                
+                <!-- Feature 6 -->
+                <div class="group p-8 glass-effect rounded-2xl hover:bg-white/10 transition-all hover-float cursor-pointer">
+                    <div class="w-14 h-14 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Secure & Private</h3>
+                    <p class="text-gray-400 mb-4">Google OAuth, encrypted sessions, and private storage. Your data stays yours.</p>
+                    <div class="text-sm text-pink-400">🔒 Bank-level security</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Avatars Showcase -->
+    <section class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="text-5xl md:text-6xl font-bold text-white mb-6 propeller-font">
+                    Meet Your <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">AI Avatars</span>
+                </h2>
+                <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                    Each avatar is specialized for your needs with personalized questionnaires
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-8">
+                <!-- Fitness Coach -->
+                <a href="/avatars" class="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 fade-in-up">
+                    <div class="relative w-36 h-36 mx-auto mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden ring-4 ring-green-500/30 group-hover:ring-green-500 transition-all">
+                            <img src="assets/images/fitness.jpg" alt="Fitness Coach" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-1">Fitness Coach</h4>
+                    <p class="text-sm text-gray-400">Health & Wellness</p>
+                </a>
+
+                <!-- Personal Tutor -->
+                <a href="/avatars" class="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 fade-in-up delay-100">
+                    <div class="relative w-36 h-36 mx-auto mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden ring-4 ring-blue-500/30 group-hover:ring-blue-500 transition-all">
+                            <img src="assets/images/tutor.png" alt="Personal Tutor" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-1">Personal Tutor</h4>
+                    <p class="text-sm text-gray-400">Education</p>
+                </a>
+
+                <!-- Career Coach -->
+                <a href="/avatars" class="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 fade-in-up delay-200">
+                    <div class="relative w-36 h-36 mx-auto mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden ring-4 ring-purple-500/30 group-hover:ring-purple-500 transition-all">
+                            <img src="assets/images/career.png" alt="Career Coach" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-1">Career Coach</h4>
+                    <p class="text-sm text-gray-400">Professional</p>
+                </a>
+
+                <!-- Finance Advisor -->
+                <a href="/avatars" class="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 fade-in-up delay-300">
+                    <div class="relative w-36 h-36 mx-auto mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden ring-4 ring-amber-500/30 group-hover:ring-amber-500 transition-all">
+                            <img src="assets/images/finance.png" alt="Finance Advisor" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-1">Finance Advisor</h4>
+                    <p class="text-sm text-gray-400">Money & Investing</p>
+                </a>
+
+                <!-- Personal Chef -->
+                <a href="/avatars" class="text-center group cursor-pointer transform transition-all duration-300 hover:scale-110 fade-in-up delay-400">
+                    <div class="relative w-36 h-36 mx-auto mb-4">
+                        <div class="absolute inset-0 bg-gradient-to-r from-pink-500 to-rose-500 rounded-3xl blur-xl opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
+                        <div class="relative w-full h-full rounded-3xl overflow-hidden ring-4 ring-pink-500/30 group-hover:ring-pink-500 transition-all">
+                            <img src="assets/images/chef.png" alt="Personal Chef" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    <h4 class="text-white font-bold text-lg mb-1">Personal Chef</h4>
+                    <p class="text-sm text-gray-400">Cooking & Recipes</p>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- How It Works -->
+    <section class="py-24 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20 fade-in-up">
+                <h2 class="text-5xl md:text-6xl font-bold text-white mb-6 propeller-font">
+                    How It <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">Works</span>
+                </h2>
+                <p class="text-xl text-gray-400">Get started in just 3 simple steps</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-12">
+                <!-- Step 1 -->
+                <div class="text-center fade-in-up">
+                    <div class="relative mb-8">
+                        <div class="absolute inset-0 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-full blur-xl opacity-30"></div>
+                        <div class="relative w-24 h-24 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center justify-center mx-auto shadow-2xl">
+                            <span class="text-4xl font-bold text-white">1</span>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Sign Up Instantly</h3>
+                    <p class="text-gray-400 leading-relaxed">Quick Google OAuth login. No lengthy forms, passwords, or credit cards required. Start chatting in seconds.</p>
+                </div>
+                
+                <!-- Step 2 -->
+                <div class="text-center fade-in-up delay-100">
+                    <div class="relative mb-8">
+                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur-xl opacity-30"></div>
+                        <div class="relative w-24 h-24 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center mx-auto shadow-2xl">
+                            <span class="text-4xl font-bold text-white">2</span>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Pick Your Avatar</h3>
+                    <p class="text-gray-400 leading-relaxed">Choose a specialized AI avatar or use Propeller AI for general conversations. Each avatar personalizes to your needs.</p>
+                </div>
+                
+                <!-- Step 3 -->
+                <div class="text-center fade-in-up delay-200">
+                    <div class="relative mb-8">
+                        <div class="absolute inset-0 bg-gradient-to-r from-pink-600 to-rose-600 rounded-full blur-xl opacity-30"></div>
+                        <div class="relative w-24 h-24 rounded-full bg-gradient-to-r from-pink-600 to-rose-600 flex items-center justify-center mx-auto shadow-2xl">
+                            <span class="text-4xl font-bold text-white">3</span>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4">Start Chatting</h3>
+                    <p class="text-gray-400 leading-relaxed">Get instant AI-powered answers, upload images for analysis, and enjoy lightning-fast personalized assistance.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- CTA Section -->
+    <section class="py-24 px-4">
+        <div class="max-w-4xl mx-auto text-center fade-in-up">
+            <div class="glass-effect rounded-3xl p-16 relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                    <div class="absolute top-10 left-10 w-32 h-32 bg-indigo-500 rounded-full blur-3xl"></div>
+                    <div class="absolute bottom-10 right-10 w-40 h-40 bg-purple-500 rounded-full blur-3xl"></div>
+                    <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-pink-500 rounded-full blur-3xl"></div>
+                </div>
+                
+                <div class="relative z-10">
+                    <h2 class="text-5xl md:text-6xl font-bold text-white mb-6 propeller-font">
+                        Ready to Get <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Started?</span>
+                    </h2>
+                    <p class="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                        Join thousands of users experiencing the future of AI conversation
+                    </p>
+                    <a href="/auth" class="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white rounded-2xl font-bold text-xl hover:shadow-2xl transition-all duration-300 shadow-lg transform hover:scale-105">
+                        Start Chatting Now
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                        </svg>
+                    </a>
+                    <p class="text-sm text-gray-400 mt-6">No credit card required • Get started instantly</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t glass-effect" style="border-color: rgba(255, 255, 255, 0.1);">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid md:grid-cols-3 gap-8 mb-8">
+                <!-- Brand -->
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="assets/images/propeller-logo.png" alt="Propeller" class="w-8 h-8">
+                        <span class="text-2xl font-bold text-white propeller-font">Propeller</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">AI-powered conversations with specialized avatars and vision capabilities.</p>
+                </div>
+                
+                <!-- Links -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/auth" class="text-gray-400 hover:text-indigo-400 transition-colors text-sm">Get Started</a></li>
+                        <li><a href="/avatars" class="text-gray-400 hover:text-indigo-400 transition-colors text-sm">Avatars</a></li>
+                        <li><a href="/chat" class="text-gray-400 hover:text-indigo-400 transition-colors text-sm">Chat</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Legal -->
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Legal</h4>
+                    <ul class="space-y-2">
+                        <li><a href="/privacy" class="text-gray-400 hover:text-indigo-400 transition-colors text-sm">Privacy Policy</a></li>
+                        <li><a href="/terms" class="text-gray-400 hover:text-indigo-400 transition-colors text-sm">Terms of Service</a></li>
+                        <li><a href="mailto:support@propellerai.com" class="text-gray-400 hover:text-indigo-400 transition-colors text-sm">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="pt-8 border-t text-center" style="border-color: rgba(255, 255, 255, 0.1);">
+                <p class="text-gray-500 text-sm">&copy; 2024 Propeller AI. All rights reserved. Powered by GPT-4o & DeepSeek.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

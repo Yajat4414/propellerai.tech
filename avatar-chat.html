@@ -1,0 +1,1734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propeller - Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        .propeller-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .sidebar-transition { 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .message-fade-in { 
+            animation: fadeInUp 0.4s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(15px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
+        }
+        
+        .chat-bubble { 
+            max-width: 85%; 
+            word-wrap: break-word;
+        }
+        
+        .scrollbar-hide { 
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar { 
+            display: none;
+        }
+        
+        .chat-item {
+            transition: all 0.2s ease;
+        }
+        
+        .chat-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+            transform: translateX(4px);
+        }
+        
+        .chat-item.active {
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.2), rgba(168, 85, 247, 0.1));
+            border-left: 3px solid #6366f1;
+        }
+        
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        
+        .typing-dot {
+            animation: pulse-dot 1.4s ease-in-out infinite;
+        }
+        
+        .glass-effect {
+            background: rgba(42, 42, 44, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .input-glow:focus-within {
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+        
+        .hover-lift {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+        
+        .chat-menu-dropdown {
+            position: absolute;
+            right: 0;
+            top: 100%;
+            margin-top: 4px;
+            z-index: 50;
+        }
+        
+        /* Sidebar minimized state */
+        #sidebar.minimized {
+            width: 80px !important;
+        }
+        
+        #sidebar.minimized .sidebar-text,
+        #sidebar.minimized .chat-history-section,
+        #sidebar.minimized #userName,
+        #sidebar.minimized .user-plan {
+            display: none !important;
+        }
+        
+        /* Remove flex-1 from chat history when minimized so user info goes to bottom */
+        #sidebar.minimized .chat-history-section {
+            flex: 0 !important;
+            height: 0 !important;
+            padding: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Show spacer when minimized to push profile to bottom */
+        #sidebar.minimized .spacer-minimized {
+            display: block !important;
+            flex: 1 !important;
+        }
+        
+        #sidebar.minimized #newChatBtn span {
+            display: none !important;
+        }
+        
+        #sidebar.minimized #newChatBtn {
+            padding: 12px !important;
+            justify-content: center !important;
+        }
+        
+        #sidebar.minimized #settingsBtn {
+            justify-content: center !important;
+            padding: 12px !important;
+        }
+        
+        #sidebar.minimized #settingsBtn > div:first-child {
+            justify-content: center !important;
+            flex: 0 !important;
+        }
+        
+        #sidebar.minimized .logo-container {
+            justify-content: center !important;
+        }
+        
+        #sidebar.minimized .logo-container > div {
+            justify-content: center !important;
+        }
+        
+        #sidebar.minimized #settingsDropdown {
+            left: 85px !important;
+            bottom: 4px !important;
+            right: auto !important;
+            width: 250px !important;
+            min-width: 250px !important;
+        }
+        
+        /* Logo hover effect - show minimize button, hide logo */
+        .logo-wrapper {
+            position: relative;
+            width: 44px;
+            height: 44px;
+        }
+        
+        #sidebarLogo {
+            transition: opacity 0.2s ease;
+        }
+        
+        .minimize-btn {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-wrapper:hover #sidebarLogo {
+            opacity: 0;
+        }
+        
+        .logo-wrapper:hover .minimize-btn {
+            opacity: 1;
+        }
+        
+        /* Light Mode Styles - Modern Clean Design */
+        body.light-mode {
+            background-color: #f7f8fa !important;
+        }
+        
+        /* Sidebar - Soft gradient with subtle border */
+        body.light-mode #sidebar {
+            background: linear-gradient(180deg, #fefefe 0%, #f9fafb 100%) !important;
+            border-color: #e5e7eb !important;
+            box-shadow: 1px 0 3px rgba(0, 0, 0, 0.03) !important;
+        }
+        
+        /* Text colors - Strong hierarchy */
+        body.light-mode .text-white {
+            color: #111827 !important;
+            font-weight: 500;
+        }
+        
+        body.light-mode .text-gray-400 {
+            color: #6b7280 !important;
+        }
+        
+        body.light-mode .text-gray-500 {
+            color: #9ca3af !important;
+        }
+        
+        body.light-mode .text-gray-600 {
+            color: #4b5563 !important;
+        }
+        
+        /* Glass effect - Clean cards with shadows */
+        body.light-mode .glass-effect {
+            background: #ffffff !important;
+            border: 1px solid #e5e7eb !important;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 3px 0 rgba(0, 0, 0, 0.04) !important;
+            border-radius: 12px !important;
+        }
+        
+        /* Borders - Subtle and clean */
+        body.light-mode .border-b,
+        body.light-mode .border-t,
+        body.light-mode .border-r {
+            border-color: #e5e7eb !important;
+        }
+        
+        /* Hover states - Subtle interactions */
+        body.light-mode .bg-gray-800\/50 {
+            background-color: #f3f4f6 !important;
+        }
+        
+        body.light-mode .chat-item {
+            border-radius: 10px !important;
+            margin: 2px 0 !important;
+            transition: all 0.2s ease !important;
+        }
+        
+        body.light-mode .chat-item:hover {
+            background: #f3f4f6 !important;
+            transform: translateX(2px) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        body.light-mode .chat-item.active {
+            background: linear-gradient(90deg, #eef2ff 0%, #e0e7ff 100%) !important;
+            border-left: 3px solid #6366f1 !important;
+            box-shadow: 0 1px 3px rgba(99, 102, 241, 0.1) !important;
+        }
+        
+        body.light-mode .hover\:text-white:hover {
+            color: #111827 !important;
+        }
+        
+        body.light-mode .hover\:bg-gray-800\/50:hover {
+            background-color: #f3f4f6 !important;
+            border-radius: 10px !important;
+        }
+        
+        /* Main content area - Soft background */
+        body.light-mode #messagesContainer,
+        body.light-mode .flex-1 {
+            background-color: #f7f8fa !important;
+        }
+        
+        /* Input area - Clean white with shadow */
+        body.light-mode textarea {
+            color: #111827 !important;
+            background: #ffffff !important;
+            font-weight: 400;
+        }
+        
+        body.light-mode textarea::placeholder {
+            color: #9ca3af !important;
+        }
+        
+        body.light-mode .input-glow {
+            background: #ffffff !important;
+            border-color: #d1d5db !important;
+            border-radius: 16px !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        }
+        
+        body.light-mode .input-glow:focus-within {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+        }
+        
+        /* Buttons - Rounded with better hover */
+        body.light-mode button {
+            border-radius: 10px !important;
+        }
+        
+        body.light-mode #newChatBtn {
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2) !important;
+        }
+        
+        body.light-mode #newChatBtn:hover {
+            box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3) !important;
+        }
+        
+        body.light-mode #sendBtn {
+            border-radius: 12px !important;
+            box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2) !important;
+        }
+        
+        /* Dropdowns - Clean with proper shadows */
+        body.light-mode #settingsDropdown {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+            border-radius: 12px !important;
+        }
+        
+        body.light-mode #settingsDropdown a,
+        body.light-mode #settingsDropdown button {
+            border-radius: 8px !important;
+            margin: 4px 8px !important;
+            color: #374151 !important;
+        }
+        
+        body.light-mode #settingsDropdown a:hover,
+        body.light-mode #settingsDropdown button:hover {
+            color: #111827 !important;
+        }
+        
+        body.light-mode #settingsDropdown button:hover {
+            color: #dc2626 !important;
+        }
+        
+        body.light-mode #settingsDropdown .border-b {
+            border-color: #f3f4f6 !important;
+        }
+        
+        body.light-mode [id^="chatMenu"] {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 0 4px 10px rgba(0, 0, 0, 0.04) !important;
+            border-radius: 12px !important;
+        }
+        
+        body.light-mode [id^="chatMenu"] button {
+            margin: 4px 8px !important;
+            border-radius: 8px !important;
+        }
+        
+        body.light-mode [id^="chatMenu"] .border-b,
+        body.light-mode [id^="chatMenu"] .border-t {
+            border-color: #f3f4f6 !important;
+        }
+        
+        /* Message bubbles - Better contrast */
+        body.light-mode .chat-bubble {
+            color: #111827 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }
+        
+        /* User info section - Clean spacing */
+        body.light-mode #userName {
+            color: #111827 !important;
+            font-weight: 600;
+        }
+        
+        body.light-mode #userInitial {
+            color: #ffffff !important;
+        }
+        
+        body.light-mode #settingsBtn {
+            border-radius: 12px !important;
+        }
+        
+        body.light-mode #settingsBtn:hover {
+            background-color: #f3f4f6 !important;
+        }
+        
+        /* Welcome screen - Modern cards */
+        body.light-mode .suggestion-card {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+            border-radius: 24px !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+        }
+        
+        body.light-mode .suggestion-card:hover {
+            background: #ffffff !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+            transform: translateY(-2px) !important;
+        }
+        
+        body.light-mode .suggestion-card span {
+            color: #111827 !important;
+            font-weight: 500;
+        }
+        
+        /* Top bar - Clean header */
+        body.light-mode .border-b.px-6 {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+        }
+        
+        /* Action buttons - Rounded and clean */
+        body.light-mode #fileUploadBtn,
+        body.light-mode .w-10.h-10 {
+            border-radius: 10px !important;
+        }
+        
+        body.light-mode #fileUploadBtn:hover,
+        body.light-mode .w-10.h-10:hover {
+            background-color: #f3f4f6 !important;
+        }
+        
+        /* Profile section background */
+        body.light-mode .p-4.border-t {
+            background: linear-gradient(180deg, #fefefe 0%, #f9fafb 100%) !important;
+        }
+        
+        /* Footer/Input section - CRITICAL FIX */
+        body.light-mode .footer-section {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+        }
+        
+        body.light-mode .footer-section p {
+            color: #9ca3af !important;
+        }
+        
+        /* Action button icons in light mode */
+        body.light-mode .footer-section svg {
+            color: #6b7280 !important;
+        }
+        
+        body.light-mode .footer-section button:hover svg {
+            color: #6366f1 !important;
+        }
+        
+        /* Sidebar Header - Light mode override for inline styles */
+        body.light-mode .p-5.border-b {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+        }
+        
+        /* User Info Section at Bottom - Light mode */
+        body.light-mode .p-4.border-t {
+            background: #ffffff !important;
+            border-color: #e5e7eb !important;
+        }
+    </style>
+</head>
+<body class="font-['Inter'] h-screen overflow-hidden" style="background-color: #1f1f21;">
+    <div class="flex h-full">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar-transition shadow-2xl border-r flex flex-col" style="width: 300px; background: linear-gradient(180deg, #0f0f11 0%, #1a1a1c 100%); border-color: #2a2a2c;">
+            <!-- Sidebar Header -->
+            <div class="p-5 border-b" style="border-color: #2a2a2c; background: rgba(15, 15, 17, 0.8);">
+                <div class="flex items-center justify-between mb-4 logo-container relative">
+                    <div class="flex items-center space-x-3">
+                        <div class="logo-wrapper rounded-xl shadow-lg">
+                            <img id="sidebarLogo" src="assets/images/logo.png" alt="Propeller Logo" class="w-11 h-11 rounded-xl object-cover">
+                            <!-- Minimize Button (replaces logo on hover) -->
+                            <button id="minimizeBtn" class="minimize-btn bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl shadow-lg transition-all duration-200">
+                                <svg id="minimizeIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="propeller-font font-bold text-xl text-white sidebar-text">
+                            Propeller
+                        </div>
+                    </div>
+                    
+                    <button id="sidebarToggle" class="text-gray-400 hover:text-white transition-colors lg:hidden sidebar-text">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Avatars Button -->
+                <a href="/avatars" class="w-full bg-gray-800 hover:bg-gray-700 text-white py-3.5 px-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover-lift flex items-center space-x-2 mb-3 border border-gray-700">
+                    <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                    </svg>
+                    <span class="sidebar-text">Avatars</span>
+                    <svg class="w-4 h-4 ml-auto sidebar-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                
+                <!-- New Chat Button -->
+                <button id="newChatBtn" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3.5 px-4 rounded-xl font-semibold hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 shadow-lg hover-lift flex items-center justify-center space-x-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>New Chat</span>
+                </button>
+            </div>
+            
+            <!-- Chat History -->
+            <div class="flex-1 overflow-y-auto scrollbar-hide px-3 py-4 chat-history-section">
+                <div class="space-y-1">
+                    <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 px-3">Recent Chats</div>
+                    <div id="chatHistoryList" class="space-y-1">
+                        <!-- Chat items will be dynamically added here -->
+                    </div>
+                    
+                    <div id="noChatHistory" class="text-center py-12 px-4">
+                        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                        </svg>
+                        <p class="text-gray-500 text-sm">No chats yet</p>
+                        <p class="text-gray-600 text-xs mt-1">Start a conversation above</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Spacer when minimized to push profile to bottom -->
+            <div class="spacer-minimized" style="display: none;"></div>
+            
+            <!-- User Info -->
+            <div class="p-4 border-t relative" style="border-color: #2a2a2c; background: rgba(15, 15, 17, 0.8);">
+                <button id="settingsBtn" class="w-full flex items-center hover:bg-gray-800/50 rounded-xl p-3 transition-all duration-200 group">
+                    <div class="flex items-center space-x-3 flex-1">
+                        <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center ring-2 ring-indigo-500/30 flex-shrink-0">
+                            <span class="text-white text-sm font-bold" id="userInitial">U</span>
+                        </div>
+                        <div class="text-left sidebar-text">
+                            <div class="text-sm font-semibold text-white" id="userName">User Name</div>
+                            <div class="text-xs text-gray-400 user-plan">Free Plan</div>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-white transition-colors sidebar-text flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                    </svg>
+                </button>
+                
+                <!-- Settings Dropdown -->
+                <div id="settingsDropdown" class="hidden absolute bottom-20 left-4 right-4 rounded-xl shadow-2xl border overflow-hidden z-50" style="background: rgba(26, 26, 28, 0.98); border-color: #3a3a3c; backdrop-filter: blur(12px);">
+                    <a href="/settings" class="w-full p-4 text-left hover:bg-indigo-600/20 transition-colors flex items-center space-x-3 text-gray-300 hover:text-white border-b" style="border-color: #3a3a3c;">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span class="font-medium">Settings & Profile</span>
+                    </a>
+                    <button id="logoutBtn" class="w-full p-4 text-left hover:bg-red-600/20 transition-colors flex items-center space-x-3 text-gray-300 hover:text-red-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span class="font-medium">Logout</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Chat Area -->
+        <div class="flex-1 flex flex-col" style="background-color: #1f1f21;">
+            <!-- Top Bar -->
+            <div class="border-b px-6 py-4 flex items-center justify-between" style="border-color: #2a2a2c; background: rgba(31, 31, 33, 0.8); backdrop-filter: blur(12px);">
+                <div class="flex items-center space-x-4">
+                    <button id="mobileSidebarToggle" class="text-gray-400 hover:text-white transition-colors lg:hidden">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                    <div id="avatarImageTop" class="w-10 h-10 rounded-xl shadow-lg overflow-hidden">
+                        <!-- Avatar image will be loaded here -->
+                    </div>
+                    <div class="relative">
+                        <button id="avatarSwitcher" class="flex items-center space-x-2 hover:bg-gray-800/50 px-3 py-2 rounded-lg transition-all">
+                            <div>
+                                <h2 class="text-white font-semibold text-lg text-left" id="avatarNameTop">Chat</h2>
+                                <p class="text-xs text-gray-400">AI Assistant</p>
+                            </div>
+                            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Avatar Switcher Dropdown -->
+                        <div id="avatarSwitcherDropdown" class="hidden absolute top-full left-0 mt-2 w-72 rounded-xl shadow-2xl border overflow-hidden z-50" style="background: rgba(26, 26, 28, 0.98); border-color: #3a3a3c; backdrop-filter: blur(12px);">
+                            <div class="p-3 border-b" style="border-color: #3a3a3c;">
+                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Switch AI Assistant</p>
+                            </div>
+                            
+                            <!-- Propeller AI -->
+                            <a href="/chat" class="flex items-center space-x-3 p-4 hover:bg-indigo-600/20 transition-colors border-b" style="border-color: #3a3a3c;">
+                                <img src="assets/images/logo.png" alt="Propeller" class="w-10 h-10 rounded-xl">
+                                <div class="flex-1">
+                                    <div class="text-white font-semibold">Propeller AI</div>
+                                    <div class="text-xs text-gray-400">General AI Assistant</div>
+                                </div>
+                            </a>
+                            
+                            <div class="p-3 border-b" style="border-color: #3a3a3c;">
+                                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Avatars</p>
+                            </div>
+                            
+                            <!-- Avatar List -->
+                            <div id="avatarList">
+                                <!-- Will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <a href="/avatar-setup?avatar=" id="backToSetupBtn" class="text-gray-400 hover:text-white transition-colors p-2 rounded-lg hover:bg-gray-800/50" title="Back to Setup">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Messages Container -->
+            <div id="messagesContainer" class="hidden flex-1 overflow-y-auto scrollbar-hide">
+                <div id="messagesList" class="space-y-6 p-6 w-full max-w-4xl mx-auto">
+                    <!-- Messages will be added here -->
+                </div>
+            </div>
+            
+            <!-- Welcome Screen -->
+            <div id="welcomeScreen" class="flex-1 flex flex-col items-center justify-center p-6">
+                <div class="text-center max-w-3xl mb-8">
+                    <div class="mb-8">
+                        <div class="w-24 h-24 rounded-3xl flex items-center justify-center shadow-2xl mx-auto mb-6 bg-transparent">
+                            <img id="welcomeLogo" src="assets/images/logo.png" alt="Propeller Logo" class="w-24 h-24 rounded-3xl object-cover">
+                        </div>
+                    </div>
+                    <h1 id="welcomeMessage" class="text-6xl font-black text-center mb-4 pb-2 bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent" style="line-height: 1.2;">
+                        Hi there!
+                    </h1>
+                    <p class="text-gray-400 text-xl mb-8">How can I help you today?</p>
+                    
+                    <!-- Suggestion Cards -->
+                    <div class="flex flex-wrap gap-3 mt-8 justify-center max-w-3xl mx-auto">
+                        <button class="suggestion-card glass-effect rounded-full px-5 py-2.5 hover:bg-indigo-600/10 transition-all hover-lift border flex items-center space-x-2" style="border-color: rgba(255, 255, 255, 0.08);" data-prompt="Summarize">
+                            <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                            </svg>
+                            <span class="text-white text-sm font-medium">Summarize text</span>
+                        </button>
+                        
+                        <button class="suggestion-card glass-effect rounded-full px-5 py-2.5 hover:bg-purple-600/10 transition-all hover-lift border flex items-center space-x-2" style="border-color: rgba(255, 255, 255, 0.08);" data-prompt="Help me">
+                            <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                            </svg>
+                            <span class="text-white text-sm font-medium">Analyze data</span>
+                        </button>
+                        
+                        <button class="suggestion-card glass-effect rounded-full px-5 py-2.5 hover:bg-pink-600/10 transition-all hover-lift border flex items-center space-x-2" style="border-color: rgba(255, 255, 255, 0.08);" data-prompt="Surprise me">
+                            <svg class="w-4 h-4 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/>
+                            </svg>
+                            <span class="text-white text-sm font-medium">Surprise me</span>
+                        </button>
+                        
+                        <button class="suggestion-card glass-effect rounded-full px-5 py-2.5 hover:bg-orange-600/10 transition-all hover-lift border flex items-center space-x-2" style="border-color: rgba(255, 255, 255, 0.08);" data-prompt="Make a plan">
+                            <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+                            </svg>
+                            <span class="text-white text-sm font-medium">Make a plan</span>
+                        </button>
+                        
+                        <button class="suggestion-card glass-effect rounded-full px-5 py-2.5 hover:bg-green-600/10 transition-all hover-lift border flex items-center space-x-2" style="border-color: rgba(255, 255, 255, 0.08);" data-prompt="Help me write">
+                            <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                            </svg>
+                            <span class="text-white text-sm font-medium">Help me write</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input Area (Always Visible) -->
+            <div class="p-6 border-t footer-section" style="border-color: #2a2a2c; background: rgba(31, 31, 33, 0.95);">
+                <div class="max-w-4xl mx-auto">
+                    <div class="relative border-2 rounded-2xl shadow-2xl transition-all duration-300 input-glow glass-effect" style="border-color: rgba(255, 255, 255, 0.08);">
+                        <textarea 
+                            id="messageInput" 
+                            placeholder="Ask me anything..." 
+                            rows="1"
+                            class="w-full py-5 px-6 pb-16 border-0 rounded-2xl focus:outline-none text-white placeholder-gray-400 resize-none bg-transparent text-lg"
+                            style="min-height: 70px; max-height: 200px;"
+                        ></textarea>
+                        
+                        <!-- Action Buttons -->
+                        <div class="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <button 
+                                    id="fileUploadBtn" 
+                                    class="w-10 h-10 text-gray-400 hover:text-indigo-400 hover:bg-indigo-500/10 rounded-xl transition-all duration-200 flex items-center justify-center"
+                                    title="Attach files"
+                                >
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/>
+                                    </svg>
+                                </button>
+                                <input type="file" id="fileInput" multiple class="hidden">
+                            </div>
+                            
+                            <button 
+                                id="sendBtn" 
+                                class="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all duration-200 flex items-center justify-center shadow-lg hover-lift"
+                                title="Send message"
+                            >
+                                <span class="text-2xl font-bold">↑</span>
+                            </button>
+                        </div>
+                    </div>
+                    <p class="text-center text-gray-500 text-xs mt-3">Propeller can make mistakes. Check important info.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Management - Must be first to avoid flash
+        function applyTheme() {
+            const savedTheme = localStorage.getItem('propellerTheme') || 'auto';
+            let shouldBeLightMode = false;
+            
+            if (savedTheme === 'light') {
+                shouldBeLightMode = true;
+            } else if (savedTheme === 'dark') {
+                shouldBeLightMode = false;
+            } else {
+                // Auto mode - detect system preference
+                shouldBeLightMode = window.matchMedia('(prefers-color-scheme: light)').matches;
+            }
+            
+            if (shouldBeLightMode) {
+                document.body.classList.add('light-mode');
+            } else {
+                document.body.classList.remove('light-mode');
+            }
+            
+            // Update logos based on theme
+            updateLogos(shouldBeLightMode);
+        }
+        
+        // Function to update logos based on theme
+        function updateLogos(isLightMode) {
+            const logoPath = isLightMode ? 'assets/images/logoo.png' : 'assets/images/logo.png';
+            const sidebarLogo = document.getElementById('sidebarLogo');
+            const welcomeLogo = document.getElementById('welcomeLogo');
+            
+            if (sidebarLogo) sidebarLogo.src = logoPath;
+            if (welcomeLogo) welcomeLogo.src = logoPath;
+        }
+        
+        // Apply theme immediately
+        applyTheme();
+        
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            const savedTheme = localStorage.getItem('propellerTheme') || 'auto';
+            if (savedTheme === 'auto') {
+                applyTheme();
+            }
+        });
+        
+        // Listen for theme changes from settings page
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'propellerTheme') {
+                applyTheme();
+            }
+        });
+    
+        // Initialize user info from server
+        async function initializeUser() {
+            try {
+                const response = await fetch('/api/auth/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    const user = data.user;
+                    
+                    console.log('User data received:', user);
+                    console.log('Profile picture URL:', user.picture);
+                    
+                    // Store user data
+                    localStorage.setItem('propellerCurrentUser', JSON.stringify(user));
+                    
+                    // Update UI with user info
+                    document.getElementById('userName').textContent = user.name;
+                    document.getElementById('welcomeMessage').textContent = `Hi ${user.name.split(' ')[0]}!`;
+                    
+                    // Update profile picture or initial
+                    const userInitialElement = document.getElementById('userInitial');
+                    
+                    if (user.picture) {
+                        // Replace the gradient container with profile picture
+                        const profileContainer = userInitialElement.parentElement;
+                        console.log('Profile container before:', profileContainer.className);
+                        profileContainer.className = 'w-10 h-10 rounded-full flex items-center justify-center ring-2 ring-indigo-500/30 overflow-hidden bg-gray-800';
+                        console.log('Profile container after:', profileContainer.className);
+                        profileContainer.innerHTML = `<img src="${user.picture}" alt="${user.name}" class="w-full h-full object-cover" onload="console.log('Image loaded successfully')" onerror="console.error('Image failed to load'); this.style.display='none'; this.parentElement.innerHTML='<span class=\\'text-white text-sm font-bold\\'>${user.name.charAt(0).toUpperCase()}</span>';">`;
+                        console.log('Profile container HTML updated');
+                    } else {
+                        // Use initial if no picture
+                        userInitialElement.textContent = user.name.charAt(0).toUpperCase();
+                    }
+                } else {
+                    // Not logged in, redirect to auth
+                    window.location.href = '/auth';
+                }
+            } catch (error) {
+                console.error('Error fetching user:', error);
+                // Use fallback data
+                const currentUser = JSON.parse(localStorage.getItem('propellerCurrentUser') || '{"name": "User", "email": "user@example.com"}');
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userInitial').textContent = currentUser.name.charAt(0).toUpperCase();
+                document.getElementById('welcomeMessage').textContent = `Hi ${currentUser.name}!`;
+            }
+        }
+        
+        // Initialize user on page load
+        initializeUser();
+        
+        // Load chat history on page load
+        loadChatHistory();
+
+        // Variables
+        let hasMessages = false;
+        let conversationHistory = [];
+        let currentChatId = Date.now().toString();
+        let uploadedAttachments = [];
+        
+        // Elements
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const messagesContainer = document.getElementById('messagesContainer');
+        const messagesList = document.getElementById('messagesList');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const newChatBtn = document.getElementById('newChatBtn');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsDropdown = document.getElementById('settingsDropdown');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const sidebar = document.getElementById('sidebar');
+        const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+        const minimizeBtn = document.getElementById('minimizeBtn');
+        const minimizeIcon = document.getElementById('minimizeIcon');
+        
+        // Sidebar minimize/maximize
+        let isSidebarMinimized = localStorage.getItem('sidebarMinimized') === 'true';
+        
+        // Apply saved state on load
+        if (isSidebarMinimized) {
+            sidebar.classList.add('minimized');
+            updateMinimizeIcon(true);
+        }
+        
+        minimizeBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            isSidebarMinimized = !isSidebarMinimized;
+            sidebar.classList.toggle('minimized');
+            updateMinimizeIcon(isSidebarMinimized);
+            localStorage.setItem('sidebarMinimized', isSidebarMinimized);
+        });
+        
+        function updateMinimizeIcon(isMinimized) {
+            if (isMinimized) {
+                // Show right arrow (expand)
+                minimizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7"/>';
+            } else {
+                // Show left arrow (collapse)
+                minimizeIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7"/>';
+            }
+        }
+        
+        // Settings dropdown
+        settingsBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsDropdown.classList.toggle('hidden');
+        });
+        
+        document.addEventListener('click', () => {
+            settingsDropdown.classList.add('hidden');
+        });
+        
+        // Logout
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+            localStorage.removeItem('propellerCurrentUser');
+            window.location.href = '/auth';
+        });
+        
+        // Sidebar toggle for mobile
+        if (mobileSidebarToggle) {
+            mobileSidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        }
+        
+        // Auto-resize textarea
+        function autoResizeTextarea() {
+            messageInput.style.height = 'auto';
+            messageInput.style.height = Math.min(messageInput.scrollHeight, 200) + 'px';
+        }
+        
+        messageInput.addEventListener('input', autoResizeTextarea);
+        
+        // Send message
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            
+            // Check if we have either a message or attachments
+            if (!message && uploadedAttachments.length === 0) {
+                return;
+            }
+            
+            // First message - transition
+            if (!hasMessages) {
+                hasMessages = true;
+                welcomeScreen.classList.add('hidden');
+                messagesContainer.classList.remove('hidden');
+            }
+            
+            // Store attachments to send, then clear UI immediately
+            const attachmentsToSend = [...uploadedAttachments];
+            uploadedAttachments = [];
+            const container = document.getElementById('attachmentsContainer');
+            if (container) container.remove();
+            
+            // Add user message to UI with attachments
+            addMessage(message, 'user', false, attachmentsToSend);
+            conversationHistory.push({ role: 'user', content: message });
+            
+            messageInput.value = '';
+            autoResizeTextarea();
+            
+            // Disable send button while processing
+            sendBtn.disabled = true;
+            sendBtn.style.opacity = '0.5';
+            
+            // Show typing indicator
+            addTypingIndicator();
+            
+            try {
+                // Prepare request body with personality if selected
+                const requestBody = {
+                    message: message,
+                    conversationHistory: conversationHistory.slice(0, -1), // Send history excluding current message
+                    language: localStorage.getItem('propellerLanguage') || 'en',
+                    attachments: attachmentsToSend
+                };
+                
+                // Add personality system prompt if one is selected
+                if (selectedPersonality && personalities[selectedPersonality]) {
+                    requestBody.personalityPrompt = personalities[selectedPersonality].systemPrompt;
+                    requestBody.personality = selectedPersonality;
+                }
+                
+                // Call API
+                const response = await fetch(`/api/chats/${currentChatId}/messages`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const aiMessage = data.messages[1]; // Get AI response
+                
+                // Remove typing indicator and add AI response
+                removeTypingIndicator();
+                addMessage(aiMessage.content, 'bot');
+                conversationHistory.push({ role: 'assistant', content: aiMessage.content });
+                
+                // Reload chat history to show updated chat
+                await loadChatHistory();
+                
+            } catch (error) {
+                console.error('Error sending message:', error);
+                removeTypingIndicator();
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot', true);
+            } finally {
+                // Re-enable send button
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '1';
+            }
+        }
+        
+        // Add typing indicator
+        function addTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex justify-start message-fade-in';
+            typingDiv.innerHTML = `
+                <div class="px-6 py-4 rounded-2xl shadow-lg border glass-effect" style="border-color: rgba(255, 255, 255, 0.08);">
+                    <div class="flex space-x-2">
+                        <div class="w-2 h-2 bg-indigo-500 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-purple-500 rounded-full typing-dot" style="animation-delay: 0.2s"></div>
+                        <div class="w-2 h-2 bg-pink-500 rounded-full typing-dot" style="animation-delay: 0.4s"></div>
+                    </div>
+                </div>
+            `;
+            messagesList.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+        
+        // Add message to UI
+        function addMessage(text, sender, isError = false, attachments = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} message-fade-in`;
+            
+            const bubble = document.createElement('div');
+            bubble.className = `chat-bubble px-6 py-4 rounded-2xl shadow-lg ${
+                sender === 'user' 
+                    ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white' 
+                    : isError 
+                        ? 'border border-red-500/30 glass-effect text-red-300'
+                        : 'border glass-effect text-gray-100'
+            }`;
+            
+            if (sender === 'bot' && !isError) {
+                bubble.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+            }
+            
+            // Add image attachments if present
+            let content = '';
+            if (attachments && attachments.length > 0) {
+                const imageAttachments = attachments.filter(a => a.mimetype.startsWith('image/'));
+                if (imageAttachments.length > 0) {
+                    content += '<div class="flex flex-wrap gap-2 mb-3">';
+                    imageAttachments.forEach(img => {
+                        content += `<img src="${img.url}" alt="${img.originalname}" class="max-w-xs max-h-48 rounded-lg object-cover border border-white/20">`;
+                    });
+                    content += '</div>';
+                }
+            }
+            
+            // Format text with basic markdown support
+            const formattedText = text
+                .replace(/\n/g, '<br>')
+                .replace(/###\s*(.*?)(<br>|$)/g, '<strong style="text-decoration: underline; font-weight: bold;">$1</strong>$2')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code class="bg-gray-800 px-2 py-1 rounded text-sm">$1</code>');
+            
+            content += formattedText;
+            bubble.innerHTML = content;
+            messageDiv.appendChild(bubble);
+            messagesList.appendChild(messageDiv);
+            
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+        
+        // New chat button
+        newChatBtn.addEventListener('click', () => {
+            hasMessages = false;
+            conversationHistory = [];
+            currentChatId = Date.now().toString();
+            messagesList.innerHTML = '';
+            messagesContainer.classList.add('hidden');
+            welcomeScreen.classList.remove('hidden');
+            messageInput.value = '';
+            autoResizeTextarea();
+            renderChatHistory(); // Update UI to remove active state
+        });
+        
+        // Suggestion cards
+        const suggestionCards = document.querySelectorAll('.suggestion-card');
+        suggestionCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const promptText = card.getAttribute('data-prompt');
+                messageInput.value = promptText;
+                messageInput.focus();
+            });
+        });
+        
+        // File upload button
+        document.getElementById('fileUploadBtn').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+        
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const files = e.target.files;
+            if (files.length > 0) {
+                const formData = new FormData();
+                for (let file of files) {
+                    formData.append('files', file);
+                }
+                
+                try {
+                    // Show uploading indicator
+                    const uploadIndicator = document.createElement('div');
+                    uploadIndicator.className = 'text-indigo-400 text-sm mb-2';
+                    uploadIndicator.textContent = `Uploading ${files.length} file(s)...`;
+                    messageInput.parentElement.insertBefore(uploadIndicator, messageInput);
+                    
+                    const response = await fetch('/api/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    // Remove upload indicator
+                    uploadIndicator.remove();
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        uploadedAttachments = uploadedAttachments.concat(data.files);
+                        
+                        // Show uploaded files
+                        displayUploadedFiles();
+                    } else if (response.status === 429) {
+                        // Upload limit reached
+                        const errorData = await response.json();
+                        showToast(errorData.message || 'Upload limit reached. Please try again later.', 'error');
+                    } else {
+                        throw new Error('Upload failed');
+                    }
+                } catch (error) {
+                    console.error('File upload error:', error);
+                    showToast('Failed to upload files. Please try again.', 'error');
+                }
+                
+                // Clear file input
+                e.target.value = '';
+            }
+        });
+        
+        function displayUploadedFiles() {
+            let attachmentsContainer = document.getElementById('attachmentsContainer');
+            if (!attachmentsContainer) {
+                attachmentsContainer = document.createElement('div');
+                attachmentsContainer.id = 'attachmentsContainer';
+                attachmentsContainer.className = 'flex flex-wrap gap-2 mb-2 px-2';
+                messageInput.parentElement.insertBefore(attachmentsContainer, messageInput);
+            }
+            
+            attachmentsContainer.innerHTML = uploadedAttachments.map((file, index) => `
+                <div class="flex items-center gap-2 bg-gray-800 rounded-lg px-3 py-2 text-sm">
+                    ${file.mimetype.startsWith('image/') ? 
+                        `<img src="${file.url}" class="w-8 h-8 rounded object-cover">` :
+                        `<svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>`
+                    }
+                    <span class="text-gray-300">${file.originalname}</span>
+                    <button onclick="removeAttachment(${index})" class="text-red-400 hover:text-red-300 ml-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        function removeAttachment(index) {
+            uploadedAttachments.splice(index, 1);
+            if (uploadedAttachments.length === 0) {
+                const container = document.getElementById('attachmentsContainer');
+                if (container) container.remove();
+            } else {
+                displayUploadedFiles();
+            }
+        }
+        
+        // Focus input on load
+        messageInput.focus();
+        
+        // Chat history management
+        let chatHistory = [];
+        let selectedPersonality = null;
+        let questionnaireData = {}; // Store questionnaire answers for each avatar
+        
+        // Personality definitions with base system prompts
+        const personalities = {
+            fitness: {
+                name: 'Fitness Coach',
+                basePrompt: 'You are an experienced fitness coach and personal trainer. You provide workout advice, nutrition guidance, exercise form corrections, and motivation.',
+                systemPrompt: null, // Will be built with questionnaire data
+                icon: 'lightning',
+                color: 'from-green-500 to-green-600'
+            },
+            tutor: {
+                name: 'Personal Tutor',
+                basePrompt: 'You are a knowledgeable and patient tutor who helps students learn various subjects.',
+                systemPrompt: null, // Will be built with questionnaire data
+                icon: 'book',
+                color: 'from-blue-500 to-blue-600'
+            },
+            career: {
+                name: 'Career Coach',
+                basePrompt: 'You are a professional career coach with expertise in career development, job searching, and professional growth.',
+                systemPrompt: null, // Will be built with questionnaire data
+                icon: 'briefcase',
+                color: 'from-purple-500 to-purple-600'
+            },
+            finance: {
+                name: 'Finance Advisor',
+                basePrompt: 'You are a knowledgeable financial advisor who helps with personal finance, budgeting, investing, and financial planning.',
+                systemPrompt: null, // Will be built with questionnaire data
+                icon: 'currency',
+                color: 'from-amber-500 to-amber-600'
+            },
+            chef: {
+                name: 'Personal Chef',
+                basePrompt: 'You are an experienced personal chef and culinary expert. Help with meal planning, recipes, cooking techniques, dietary requirements, and food preparation.',
+                systemPrompt: null, // Will be built with questionnaire data
+                icon: 'plus',
+                color: 'from-pink-500 to-pink-600'
+            }
+        };
+        
+        // Build personalized system prompt from questionnaire data
+        function buildSystemPrompt(avatarType) {
+            const personality = personalities[avatarType];
+            if (!personality) return '';
+            
+            let prompt = personality.basePrompt;
+            const answers = questionnaireData[avatarType];
+            
+            if (answers && Object.keys(answers).length > 0) {
+                prompt += '\n\nUser Profile:\n';
+                Object.entries(answers).forEach(([question, answer]) => {
+                    if (answer && answer.trim()) {
+                        prompt += `- ${question}: ${answer}\n`;
+                    }
+                });
+                prompt += '\nUse this information to personalize your responses and provide tailored advice based on their specific needs, goals, and preferences.';
+            }
+            
+            return prompt;
+        }
+        
+        // Load questionnaire data for current avatar
+        async function loadQuestionnaireData(avatarType) {
+            try {
+                const response = await fetch(`/api/avatar/${avatarType}/status`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.hasQuestionnaire && data.answers) {
+                        questionnaireData[avatarType] = data.answers;
+                        personalities[avatarType].systemPrompt = buildSystemPrompt(avatarType);
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading questionnaire data:', error);
+            }
+        }
+        
+        // Handle personality selection
+        document.querySelectorAll('.personality-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const personalityType = this.getAttribute('data-personality');
+                selectPersonality(personalityType);
+            });
+        });
+        
+        async function selectPersonality(type) {
+            selectedPersonality = type;
+            
+            // Load questionnaire data for this avatar
+            await loadQuestionnaireData(type);
+            
+            // Update UI - highlight selected personality
+            document.querySelectorAll('.personality-btn').forEach(btn => {
+                if (btn.getAttribute('data-personality') === type) {
+                    btn.classList.add('bg-indigo-600/30', 'border-l-3', 'border-indigo-500');
+                    btn.classList.remove('text-gray-300');
+                    btn.classList.add('text-white');
+                } else {
+                    btn.classList.remove('bg-indigo-600/30', 'border-l-3', 'border-indigo-500');
+                    btn.classList.add('text-gray-300');
+                    btn.classList.remove('text-white');
+                }
+            });
+            
+            // Start new chat with personality
+            startNewChat();
+            
+            // Show personality indicator in welcome message
+            const personality = personalities[type];
+            document.getElementById('welcomeMessage').textContent = `Chat with ${personality.name}`;
+            
+            showToast(`Switched to ${personality.name} mode`, 'success');
+        }
+
+        async function loadChatHistory() {
+            try {
+                const response = await fetch('/api/chats');
+                if (response.ok) {
+                    const data = await response.json();
+                    chatHistory = data.chats;
+                    renderChatHistory();
+                }
+            } catch (error) {
+                console.error('Error loading chat history:', error);
+            }
+        }
+
+        function renderChatHistory() {
+            const chatHistoryList = document.getElementById('chatHistoryList');
+            const noChatHistory = document.getElementById('noChatHistory');
+            
+            if (chatHistory.length === 0) {
+                noChatHistory.classList.remove('hidden');
+                chatHistoryList.innerHTML = '';
+                return;
+            }
+            
+            noChatHistory.classList.add('hidden');
+            chatHistoryList.innerHTML = chatHistory.map((chat) => {
+                return `
+                <div class="chat-item px-2 py-2 rounded-lg cursor-pointer relative ${currentChatId === chat.id ? 'active' : ''}" data-chat-id="${chat.id}">
+                    <div class="flex items-center justify-between gap-1">
+                        <div class="flex-1 min-w-0 chat-item-content">
+                            <h4 class="text-white text-sm truncate">${chat.title}</h4>
+                        </div>
+                        <div class="relative flex-shrink-0">
+                            <button class="chat-menu-btn text-gray-500 hover:text-white transition-colors p-1" onclick="toggleChatMenu(event, '${chat.id}')">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="5" r="2"/>
+                                    <circle cx="12" cy="12" r="2"/>
+                                    <circle cx="12" cy="19" r="2"/>
+                                </svg>
+                            </button>
+                            <div id="chatMenu${chat.id}" class="hidden chat-menu-dropdown absolute right-0 top-8 rounded-xl shadow-2xl border overflow-hidden z-50" style="background: rgba(26, 26, 28, 0.98); border-color: #3a3a3c; backdrop-filter: blur(12px); min-width: 150px;">
+                                <button onclick="renameChat('${chat.id}')" class="w-full p-3 text-left hover:bg-indigo-600/20 transition-colors flex items-center space-x-2 text-gray-300 hover:text-white text-sm">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    </svg>
+                                    <span>Rename</span>
+                                </button>
+                                <button onclick="deleteChat('${chat.id}')" class="w-full p-3 text-left hover:bg-red-600/20 transition-colors flex items-center space-x-2 text-gray-300 hover:text-red-400 text-sm border-t" style="border-color: #3a3a3c;">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                    </svg>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+            
+            // Add click handlers for chat items
+            document.querySelectorAll('.chat-item-content').forEach((item) => {
+                item.addEventListener('click', async () => {
+                    const chatItem = item.closest('.chat-item');
+                    const chatId = chatItem.dataset.chatId;
+                    await loadChat(chatId);
+                });
+            });
+        }
+
+        async function loadChat(chatId) {
+            try {
+                const response = await fetch(`/api/chats/${chatId}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    const chat = data.chat;
+                    
+                    // Set current chat
+                    currentChatId = chatId;
+                    conversationHistory = [...chat.messages]; // Create a copy
+                    
+                    // Clear and load messages
+                    messagesList.innerHTML = '';
+                    hasMessages = false;
+                    
+                    if (chat.messages.length > 0) {
+                        hasMessages = true;
+                        welcomeScreen.classList.add('hidden');
+                        messagesContainer.classList.remove('hidden');
+                        
+                        chat.messages.forEach(msg => {
+                            addMessage(msg.content, msg.role === 'user' ? 'user' : 'bot', false, msg.attachments || []);
+                        });
+                    } else {
+                        // Empty chat
+                        welcomeScreen.classList.remove('hidden');
+                        messagesContainer.classList.add('hidden');
+                    }
+                    
+                    // Update UI
+                    renderChatHistory();
+                    
+                    // Focus on input
+                    messageInput.focus();
+                } else {
+                    console.error('Failed to load chat:', response.status);
+                }
+            } catch (error) {
+                console.error('Error loading chat:', error);
+                alert('Failed to load chat. Please try again.');
+            }
+        }
+
+        function toggleChatMenu(event, chatId) {
+            event.stopPropagation();
+            const menu = document.getElementById(`chatMenu${chatId}`);
+            
+            // Close all other menus
+            document.querySelectorAll('[id^="chatMenu"]').forEach(m => {
+                if (m.id !== `chatMenu${chatId}`) {
+                    m.classList.add('hidden');
+                }
+            });
+            
+            menu.classList.toggle('hidden');
+        }
+
+        let currentRenameChatId = null;
+        let currentDeleteChatId = null;
+
+        function renameChat(chatId) {
+            const chat = chatHistory.find(c => c.id === chatId);
+            currentRenameChatId = chatId;
+            document.getElementById('renameChatInput').value = chat.title;
+            document.getElementById('renameModal').classList.remove('hidden');
+            document.getElementById(`chatMenu${chatId}`).classList.add('hidden');
+            // Focus input after animation
+            setTimeout(() => {
+                document.getElementById('renameChatInput').focus();
+                document.getElementById('renameChatInput').select();
+            }, 100);
+        }
+
+        function closeRenameModal() {
+            document.getElementById('renameModal').classList.add('hidden');
+            currentRenameChatId = null;
+        }
+
+        async function confirmRename() {
+            const newTitle = document.getElementById('renameChatInput').value.trim();
+            if (newTitle && currentRenameChatId) {
+                try {
+                    const response = await fetch(`/api/chats/${currentRenameChatId}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ title: newTitle })
+                    });
+                    if (response.ok) {
+                        await loadChatHistory();
+                        closeRenameModal();
+                    }
+                } catch (error) {
+                    console.error('Error renaming chat:', error);
+                    alert('Failed to rename chat. Please try again.');
+                }
+            }
+        }
+
+        function deleteChat(chatId) {
+            currentDeleteChatId = chatId;
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById(`chatMenu${chatId}`).classList.add('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            currentDeleteChatId = null;
+        }
+
+        async function confirmDelete() {
+            if (currentDeleteChatId) {
+                try {
+                    const response = await fetch(`/api/chats/${currentDeleteChatId}`, {
+                        method: 'DELETE'
+                    });
+                    if (response.ok) {
+                        if (currentChatId === currentDeleteChatId) {
+                            // If deleting current chat, start new chat
+                            newChatBtn.click();
+                        }
+                        await loadChatHistory();
+                        closeDeleteModal();
+                    }
+                } catch (error) {
+                    console.error('Error deleting chat:', error);
+                    alert('Failed to delete chat. Please try again.');
+                }
+            }
+        }
+
+        // Close modals on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeRenameModal();
+                closeDeleteModal();
+            }
+        });
+
+        // Close modals on Enter key for rename
+        document.getElementById('renameChatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                confirmRename();
+            }
+        });
+
+        // Close menus when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.chat-menu-btn')) {
+                document.querySelectorAll('[id^="chatMenu"]').forEach(m => {
+                    m.classList.add('hidden');
+                });
+            }
+        });
+
+        // Check for avatar parameter in URL
+        function checkAvatarParam() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const avatarParam = urlParams.get('avatar');
+            
+            if (avatarParam && personalities[avatarParam]) {
+                // Automatically select the personality
+                selectPersonality(avatarParam);
+                
+                // Clear the URL parameter
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // Initial render
+        renderChatHistory();
+        checkAvatarParam();
+    </script>
+
+    <!-- Rename Chat Modal -->
+    <div id="renameModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 max-w-md w-full transform transition-all" style="animation: modalSlideIn 0.2s ease-out;">
+            <div class="p-6 border-b border-gray-800">
+                <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                    Rename Chat
+                </h3>
+            </div>
+            <div class="p-6">
+                <input type="text" id="renameChatInput" placeholder="Enter new chat name..." class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+            </div>
+            <div class="p-6 pt-0 flex gap-3">
+                <button onclick="closeRenameModal()" class="flex-1 px-4 py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition-all font-medium">
+                    Cancel
+                </button>
+                <button onclick="confirmRename()" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl hover:from-indigo-700 hover:to-purple-700 transition-all font-medium shadow-lg">
+                    Rename
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Chat Modal -->
+    <div id="deleteModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-gray-900 rounded-2xl shadow-2xl border border-gray-800 max-w-md w-full transform transition-all" style="animation: modalSlideIn 0.2s ease-out;">
+            <div class="p-6 border-b border-gray-800">
+                <h3 class="text-xl font-bold text-white flex items-center gap-3">
+                    <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Delete Chat
+                </h3>
+            </div>
+            <div class="p-6">
+                <p class="text-gray-300">Are you sure you want to delete this chat? This action cannot be undone.</p>
+            </div>
+            <div class="p-6 pt-0 flex gap-3">
+                <button onclick="closeDeleteModal()" class="flex-1 px-4 py-3 bg-gray-800 text-gray-300 rounded-xl hover:bg-gray-700 transition-all font-medium">
+                    Cancel
+                </button>
+                <button onclick="confirmDelete()" class="flex-1 px-4 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-all font-medium shadow-lg">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+    
+    <script>
+// Load avatar info from URL
+const urlParams = new URLSearchParams(window.location.search);
+const currentAvatar = urlParams.get("avatar");
+
+const avatarData = {
+    fitness: { name: "Fitness Coach", image: "assets/images/fitness.jpg" },
+    tutor: { name: "Personal Tutor", image: "assets/images/tutor.png" },
+    career: { name: "Career Coach", image: "assets/images/career.png" },
+    finance: { name: "Finance Advisor", image: "assets/images/finance.png" },
+    chef: { name: "Personal Chef", image: "assets/images/chef.png" }
+};
+
+if (currentAvatar && avatarData[currentAvatar]) {
+    const avatar = avatarData[currentAvatar];
+    document.getElementById("avatarNameTop").textContent = avatar.name;
+    document.getElementById("avatarImageTop").innerHTML = `<img src="${avatar.image}" alt="${avatar.name}" class="w-full h-full object-cover">`;
+    document.getElementById("backToSetupBtn").href = `/avatar-setup?avatar=${currentAvatar}`;
+    document.title = `${avatar.name} - Propeller`;
+    
+    // Set the selected personality to the current avatar
+    selectedPersonality = currentAvatar;
+    
+    // Load questionnaire data for this avatar on page load
+    loadQuestionnaireData(currentAvatar);
+}
+
+// Toggle avatar switcher dropdown
+const avatarSwitcher = document.getElementById('avatarSwitcher');
+const avatarSwitcherDropdown = document.getElementById('avatarSwitcherDropdown');
+
+avatarSwitcher.addEventListener('click', (e) => {
+    e.stopPropagation();
+    avatarSwitcherDropdown.classList.toggle('hidden');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => {
+    avatarSwitcherDropdown.classList.add('hidden');
+});
+
+avatarSwitcherDropdown.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+// Load avatar list with status check
+async function loadAvatarList() {
+    const avatarList = document.getElementById('avatarList');
+    
+    for (const [key, data] of Object.entries(avatarData)) {
+        try {
+            const response = await fetch(`/api/avatar/${key}/status`);
+            const statusData = await response.json();
+            
+            const avatarItem = document.createElement('div');
+            
+            if (statusData.hasQuestionnaire) {
+                // Avatar is set up, can switch to it
+                avatarItem.innerHTML = `
+                    <a href="/avatar-chat?avatar=${key}" class="flex items-center space-x-3 p-4 hover:bg-indigo-600/20 transition-colors border-b ${currentAvatar === key ? 'bg-indigo-600/10' : ''}" style="border-color: #3a3a3c;">
+                        <img src="${data.image}" alt="${data.name}" class="w-10 h-10 rounded-xl">
+                        <div class="flex-1">
+                            <div class="text-white font-semibold">${data.name}</div>
+                            <div class="text-xs text-green-400 flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                                Ready
+                            </div>
+                        </div>
+                    </a>
+                `;
+            } else {
+                // Avatar needs setup
+                avatarItem.innerHTML = `
+                    <a href="/questionnaire?avatar=${key}" class="flex items-center space-x-3 p-4 hover:bg-yellow-600/20 transition-colors border-b" style="border-color: #3a3a3c;">
+                        <img src="${data.image}" alt="${data.name}" class="w-10 h-10 rounded-xl opacity-50">
+                        <div class="flex-1">
+                            <div class="text-white font-semibold">${data.name}</div>
+                            <div class="text-xs text-yellow-400 flex items-center">
+                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                                </svg>
+                                Setup Required
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+            
+            avatarList.appendChild(avatarItem);
+        } catch (error) {
+            console.error(`Error loading status for ${key}:`, error);
+        }
+    }
+}
+
+// Load avatar list on page load
+loadAvatarList();
+
+// Reload questionnaire data when user returns to the page (e.g., after updating questionnaire)
+document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && currentAvatar) {
+        // User returned to the page, reload questionnaire data
+        loadQuestionnaireData(currentAvatar);
+    }
+});
+
+// Also reload when window regains focus
+window.addEventListener('focus', () => {
+    if (currentAvatar) {
+        loadQuestionnaireData(currentAvatar);
+    }
+});
+    </script>
+</body>

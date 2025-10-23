@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propeller - Avatar Questionnaire</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        .propeller-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .glass-effect {
+            background: rgba(42, 42, 44, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .progress-bar {
+            transition: width 0.3s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body class="font-['Inter'] min-h-screen" style="background: linear-gradient(135deg, #0f0f11 0%, #1a1a1c 100%);">
+    <!-- Navigation Bar -->
+    <nav class="border-b" style="border-color: #2a2a2c; background: rgba(31, 31, 33, 0.8); backdrop-filter: blur(12px);">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <a href="/chat" class="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+                    <img src="assets/images/logo.png" alt="Propeller Logo" class="w-10 h-10 rounded-xl">
+                    <span class="propeller-font text-xl font-bold text-white">Propeller</span>
+                </a>
+            </div>
+            
+            <a href="/avatars" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg font-semibold transition-all duration-200 flex items-center space-x-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+                <span>Back to Avatars</span>
+            </a>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <!-- Header -->
+        <div class="text-center mb-12 fade-in-up">
+            <div class="w-32 h-32 rounded-2xl mx-auto mb-6 shadow-2xl overflow-hidden">
+                <img id="avatarImage" src="" alt="" class="w-full h-full object-cover">
+            </div>
+            <h1 class="propeller-font text-4xl md:text-5xl font-black text-white mb-3">
+                <span id="avatarName"></span> Setup
+            </h1>
+            <p class="text-lg text-gray-400 max-w-2xl mx-auto">
+                Help us personalize your experience by answering a few questions
+            </p>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="mb-8 fade-in-up">
+            <div class="flex justify-between items-center mb-2">
+                <span class="text-sm font-medium text-gray-400">Progress</span>
+                <span class="text-sm font-medium text-indigo-400"><span id="currentQuestion">1</span> of <span id="totalQuestions">10</span></span>
+            </div>
+            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div id="progressBar" class="progress-bar h-full bg-gradient-to-r from-indigo-500 to-purple-500" style="width: 10%"></div>
+            </div>
+        </div>
+        
+        <!-- Questionnaire Form -->
+        <form id="questionnaireForm" class="glass-effect rounded-2xl p-8 fade-in-up">
+            <div id="questionsContainer">
+                <!-- Questions will be dynamically loaded here -->
+            </div>
+            
+            <div class="flex gap-4 mt-8">
+                <button type="button" id="prevBtn" class="flex-1 px-6 py-3 bg-gray-800 hover:bg-gray-700 text-white rounded-xl font-semibold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Previous
+                </button>
+                <button type="button" id="nextBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg">
+                    Next
+                </button>
+                <button type="submit" id="submitBtn" class="hidden flex-1 px-6 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl font-semibold transition-all duration-200 shadow-lg">
+                    Start Chatting
+                </button>
+            </div>
+        </form>
+    </main>
+    
+    <script>
+        const avatarQuestions = {
+            fitness: {
+                name: 'Fitness Coach',
+                image: 'assets/images/fitness.jpg',
+                questions: [
+                    { id: 'fitness_goal', label: 'What is your primary fitness goal?', type: 'select', options: ['Weight Loss', 'Muscle Gain', 'General Fitness', 'Athletic Performance', 'Flexibility & Mobility'] },
+                    { id: 'current_level', label: 'What is your current fitness level?', type: 'select', options: ['Beginner', 'Intermediate', 'Advanced', 'Professional'] },
+                    { id: 'workout_frequency', label: 'How many days per week can you work out?', type: 'select', options: ['1-2 days', '3-4 days', '5-6 days', 'Every day'] },
+                    { id: 'workout_location', label: 'Where do you prefer to work out?', type: 'select', options: ['Home', 'Gym', 'Outdoors', 'Mix of all'] },
+                    { id: 'equipment', label: 'What equipment do you have access to?', type: 'text', placeholder: 'e.g., Dumbbells, Resistance bands, Treadmill...' },
+                    { id: 'injuries', label: 'Do you have any injuries or physical limitations?', type: 'text', placeholder: 'Please describe any injuries or limitations...' },
+                    { id: 'diet_style', label: 'What is your current diet style?', type: 'select', options: ['Regular', 'Vegetarian', 'Vegan', 'Keto', 'Paleo', 'Other'] },
+                    { id: 'sleep_hours', label: 'How many hours do you sleep per night on average?', type: 'select', options: ['Less than 5', '5-6 hours', '7-8 hours', 'More than 8'] },
+                    { id: 'motivation', label: 'What motivates you most to stay fit?', type: 'text', placeholder: 'Share what drives you...' },
+                    { id: 'challenges', label: 'What are your biggest fitness challenges?', type: 'text', placeholder: 'Describe your main obstacles...' }
+                ]
+            },
+            tutor: {
+                name: 'Personal Tutor',
+                image: 'assets/images/tutor.png',
+                questions: [
+                    { id: 'learning_goal', label: 'What subject(s) do you want to learn?', type: 'text', placeholder: 'e.g., Mathematics, Science, Languages...' },
+                    { id: 'current_level', label: 'What is your current education level?', type: 'select', options: ['Elementary School', 'Middle School', 'High School', 'College/University', 'Graduate', 'Self-Learning'] },
+                    { id: 'specific_topics', label: 'Any specific topics you want to focus on?', type: 'text', placeholder: 'e.g., Calculus, Grammar, Chemistry reactions...' },
+                    { id: 'learning_style', label: 'How do you learn best?', type: 'select', options: ['Visual (diagrams, videos)', 'Auditory (explanations)', 'Reading/Writing', 'Hands-on practice', 'Mix of all'] },
+                    { id: 'learning_pace', label: 'What is your preferred learning pace?', type: 'select', options: ['Slow and detailed', 'Moderate', 'Fast-paced', 'Flexible'] },
+                    { id: 'study_time', label: 'How much time can you dedicate to learning daily?', type: 'select', options: ['Less than 30 min', '30-60 min', '1-2 hours', 'More than 2 hours'] },
+                    { id: 'challenges', label: 'What concepts do you find most challenging?', type: 'text', placeholder: 'Describe what you struggle with...' },
+                    { id: 'goals', label: 'What are your learning goals?', type: 'text', placeholder: 'e.g., Pass an exam, career development, personal interest...' },
+                    { id: 'deadline', label: 'Do you have any upcoming exams or deadlines?', type: 'text', placeholder: 'Share any important dates...' },
+                    { id: 'previous_experience', label: 'Have you studied this subject before?', type: 'select', options: ['Never', 'A little', 'Moderate experience', 'Quite a bit', 'Extensive experience'] }
+                ]
+            },
+            career: {
+                name: 'Career Coach',
+                image: 'assets/images/career.png',
+                questions: [
+                    { id: 'current_status', label: 'What is your current career status?', type: 'select', options: ['Student', 'Job Seeker', 'Employed', 'Career Changer', 'Entrepreneur', 'Freelancer'] },
+                    { id: 'industry', label: 'What industry are you in or interested in?', type: 'text', placeholder: 'e.g., Technology, Healthcare, Finance...' },
+                    { id: 'job_title', label: 'What is your current or target job title?', type: 'text', placeholder: 'e.g., Software Engineer, Marketing Manager...' },
+                    { id: 'experience_years', label: 'How many years of professional experience do you have?', type: 'select', options: ['0-1 years', '1-3 years', '3-5 years', '5-10 years', '10+ years'] },
+                    { id: 'career_goal', label: 'What is your primary career goal?', type: 'select', options: ['Find a job', 'Get promoted', 'Change careers', 'Skill development', 'Salary negotiation', 'Start a business'] },
+                    { id: 'skills', label: 'What are your key skills?', type: 'text', placeholder: 'List your main professional skills...' },
+                    { id: 'strengths', label: 'What are your biggest professional strengths?', type: 'text', placeholder: 'Describe what you excel at...' },
+                    { id: 'areas_improve', label: 'What areas do you want to improve?', type: 'text', placeholder: 'What skills or qualities to develop?' },
+                    { id: 'timeline', label: 'What is your timeline for achieving your career goal?', type: 'select', options: ['1-3 months', '3-6 months', '6-12 months', '1-2 years', 'Flexible'] },
+                    { id: 'challenges', label: 'What are your biggest career challenges?', type: 'text', placeholder: 'Describe your main obstacles...' }
+                ]
+            },
+            finance: {
+                name: 'Finance Advisor',
+                image: 'assets/images/finance.png',
+                questions: [
+                    { id: 'financial_goal', label: 'What is your primary financial goal?', type: 'select', options: ['Save money', 'Pay off debt', 'Invest', 'Retirement planning', 'Buy a home', 'Build emergency fund'] },
+                    { id: 'income_range', label: 'What is your monthly income range?', type: 'select', options: ['Less than $2,000', '$2,000-$4,000', '$4,000-$6,000', '$6,000-$10,000', 'More than $10,000', 'Prefer not to say'] },
+                    { id: 'expense_tracking', label: 'Do you currently track your expenses?', type: 'select', options: ['Yes, regularly', 'Sometimes', 'Rarely', 'No'] },
+                    { id: 'savings_rate', label: 'What percentage of your income do you save?', type: 'select', options: ['0%', '1-10%', '10-20%', '20-30%', 'More than 30%'] },
+                    { id: 'debt_amount', label: 'Do you have any outstanding debts?', type: 'select', options: ['No debt', 'Less than $5,000', '$5,000-$20,000', '$20,000-$50,000', 'More than $50,000'] },
+                    { id: 'investment_experience', label: 'What is your investment experience?', type: 'select', options: ['No experience', 'Beginner', 'Intermediate', 'Advanced', 'Expert'] },
+                    { id: 'risk_tolerance', label: 'What is your risk tolerance for investments?', type: 'select', options: ['Very Conservative', 'Conservative', 'Moderate', 'Aggressive', 'Very Aggressive'] },
+                    { id: 'financial_knowledge', label: 'How would you rate your financial literacy?', type: 'select', options: ['Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'] },
+                    { id: 'timeline', label: 'What is your financial planning timeline?', type: 'select', options: ['Short-term (1 year)', 'Medium-term (1-5 years)', 'Long-term (5+ years)', 'Retirement'] },
+                    { id: 'priorities', label: 'What are your top 3 financial priorities?', type: 'text', placeholder: 'List your financial priorities...' }
+                ]
+            },
+            chef: {
+                name: 'Personal Chef',
+                image: 'assets/images/chef.png',
+                questions: [
+                    { id: 'cooking_level', label: 'What is your current cooking skill level?', type: 'select', options: ['Complete Beginner', 'Beginner', 'Intermediate', 'Advanced', 'Professional'] },
+                    { id: 'dietary_preference', label: 'What is your dietary preference?', type: 'select', options: ['No restrictions', 'Vegetarian', 'Vegan', 'Pescatarian', 'Gluten-free', 'Keto', 'Paleo', 'Other'] },
+                    { id: 'allergies', label: 'Do you have any food allergies or intolerances?', type: 'text', placeholder: 'List any allergies or intolerances...' },
+                    { id: 'cuisine_interest', label: 'What cuisines are you most interested in?', type: 'text', placeholder: 'e.g., Italian, Asian, Mexican, Mediterranean...' },
+                    { id: 'cooking_frequency', label: 'How often do you cook at home?', type: 'select', options: ['Rarely/Never', '1-2 times per week', '3-4 times per week', '5-6 times per week', 'Every day'] },
+                    { id: 'meal_goals', label: 'What are your meal planning goals?', type: 'select', options: ['Learn basic cooking', 'Healthy eating', 'Quick meals', 'Gourmet cooking', 'Meal prep', 'Special occasions'] },
+                    { id: 'kitchen_equipment', label: 'What kitchen equipment do you have?', type: 'text', placeholder: 'e.g., Oven, blender, food processor...' },
+                    { id: 'time_available', label: 'How much time can you spend cooking per meal?', type: 'select', options: ['Less than 15 min', '15-30 min', '30-60 min', 'More than 1 hour'] },
+                    { id: 'budget', label: 'What is your weekly grocery budget per person?', type: 'select', options: ['Less than $50', '$50-$100', '$100-$150', '$150-$200', 'More than $200'] },
+                    { id: 'cooking_challenges', label: 'What are your biggest cooking challenges?', type: 'text', placeholder: 'Describe what you struggle with in cooking...' }
+                ]
+            }
+        };
+
+        let currentAvatarType = '';
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let questions = [];
+
+        // Get avatar type from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        currentAvatarType = urlParams.get('avatar');
+
+        if (!currentAvatarType || !avatarQuestions[currentAvatarType]) {
+            window.location.href = '/avatars';
+        }
+
+        const avatarConfig = avatarQuestions[currentAvatarType];
+        questions = avatarConfig.questions;
+
+        // Set header info
+        document.getElementById('avatarImage').src = avatarConfig.image;
+        document.getElementById('avatarImage').alt = avatarConfig.name;
+        document.getElementById('avatarName').textContent = avatarConfig.name;
+        document.getElementById('totalQuestions').textContent = questions.length;
+
+        function renderQuestion(index) {
+            const question = questions[index];
+            const container = document.getElementById('questionsContainer');
+            
+            let inputHTML = '';
+            if (question.type === 'select') {
+                inputHTML = `
+                    <select id="answer_${question.id}" class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all" required>
+                        <option value="">-- Select an option --</option>
+                        ${question.options.map(opt => `<option value="${opt}" ${answers[question.id] === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                    </select>
+                `;
+            } else {
+                inputHTML = `
+                    <textarea id="answer_${question.id}" rows="4" class="w-full px-4 py-3 bg-gray-800 text-white rounded-xl border border-gray-700 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all resize-none" placeholder="${question.placeholder}" required>${answers[question.id] || ''}</textarea>
+                `;
+            }
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <label class="block text-lg font-semibold text-white mb-3">
+                        ${index + 1}. ${question.label}
+                    </label>
+                    ${inputHTML}
+                </div>
+            `;
+            
+            // Update progress
+            document.getElementById('currentQuestion').textContent = index + 1;
+            const progress = ((index + 1) / questions.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = index === 0;
+            if (index === questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('submitBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextBtn').classList.remove('hidden');
+                document.getElementById('submitBtn').classList.add('hidden');
+            }
+        }
+
+        function saveCurrentAnswer() {
+            const question = questions[currentQuestionIndex];
+            const answerElement = document.getElementById(`answer_${question.id}`);
+            if (answerElement && answerElement.value) {
+                answers[question.id] = answerElement.value;
+                return true;
+            }
+            return false;
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (saveCurrentAnswer()) {
+                if (currentQuestionIndex < questions.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                }
+            } else {
+                alert('Please answer the question before proceeding.');
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            saveCurrentAnswer();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
+            }
+        });
+
+        document.getElementById('questionnaireForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!saveCurrentAnswer()) {
+                alert('Please answer the question before submitting.');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/avatar-questionnaire', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        avatarType: currentAvatarType,
+                        answers: answers
+                    })
+                });
+                
+                if (response.ok) {
+                    // Redirect to chat with avatar
+                    window.location.href = `/chat?avatar=${currentAvatarType}`;
+                } else {
+                    alert('Failed to save questionnaire. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error submitting questionnaire:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        // Initial render
+        renderQuestion(0);
+    </script>
+</body>
+</html>

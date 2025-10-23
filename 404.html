@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | Propeller AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        .propeller-font {
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .glass-effect {
+            background: rgba(42, 42, 44, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="font-['Inter'] min-h-screen flex items-center justify-center" style="background: linear-gradient(135deg, #0f0f11 0%, #1a1a1c 50%, #0f0f11 100%);">
+    <!-- Background decoration -->
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full filter blur-[128px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-500/10 rounded-full filter blur-[128px]"></div>
+    </div>
+
+    <!-- Content -->
+    <div class="relative z-10 max-w-2xl mx-auto px-6 text-center fade-in">
+        <!-- 404 Animation -->
+        <div class="mb-8 float-animation">
+            <div class="text-9xl font-black propeller-font bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+                404
+            </div>
+        </div>
+
+        <!-- Message -->
+        <h1 class="text-4xl md:text-5xl font-bold text-white mb-4 propeller-font">
+            Page Not Found
+        </h1>
+        <p class="text-xl text-gray-400 mb-8 max-w-md mx-auto">
+            Oops! The page you're looking for seems to have drifted into the void.
+        </p>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="/" class="px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105">
+                Back to Home
+            </a>
+            <a href="/chat" class="px-8 py-4 glass-effect text-white rounded-xl font-semibold hover:bg-white/10 transition-all">
+                Go to Chat
+            </a>
+        </div>
+
+        <!-- Helpful links -->
+        <div class="mt-12 pt-8 border-t border-gray-700/30">
+            <p class="text-gray-500 text-sm mb-4">Looking for something?</p>
+            <div class="flex flex-wrap justify-center gap-4">
+                <a href="/avatars" class="text-indigo-400 hover:text-indigo-300 text-sm transition-colors">AI Avatars</a>
+                <a href="/settings" class="text-indigo-400 hover:text-indigo-300 text-sm transition-colors">Settings</a>
+                <a href="/terms" class="text-indigo-400 hover:text-indigo-300 text-sm transition-colors">Terms</a>
+                <a href="/privacy" class="text-indigo-400 hover:text-indigo-300 text-sm transition-colors">Privacy</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
