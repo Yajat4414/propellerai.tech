@@ -863,7 +863,7 @@ app.post('/api/upload', isAuthenticated, upload.array('files', 5), async (req, r
             mimetype: file.mimetype,
             size: file.size,
             path: `/uploads/${file.filename}`,
-            url: `http://localhost:${PORT}/uploads/${file.filename}`
+            url: `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
         }));
 
         res.json({ success: true, files });

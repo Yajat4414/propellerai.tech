@@ -66,29 +66,6 @@
     "createdAt": "2025-10-23T08:42:05.983Z",
     "updatedAt": "2025-10-23T08:42:05.983Z"
   },
-  "1761213887993": {
-    "id": "1761213887993",
-    "userId": "101715682346073977046",
-    "title": "Casual Greeting",
-    "personality": null,
-    "messages": [
-      {
-        "id": "1761213906050",
-        "role": "user",
-        "content": "hi there",
-        "attachments": [],
-        "timestamp": "2025-10-23T10:05:06.050Z"
-      },
-      {
-        "id": "1761213909078",
-        "role": "assistant",
-        "content": "Hello! How can I assist you today? 😊",
-        "timestamp": "2025-10-23T10:05:09.077Z"
-      }
-    ],
-    "createdAt": "2025-10-23T10:05:09.077Z",
-    "updatedAt": "2025-10-23T10:05:09.077Z"
-  },
   "1761213954464": {
     "id": "1761213954464",
     "userId": "101715682346073977046",
