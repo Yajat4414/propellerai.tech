@@ -365,7 +365,7 @@ This project is licensed under the MIT License.
 ## 🆘 Support
 
 For issues and questions:
-- Email: support@propellerai.com
+- Email: support@propellerai.tech
 - GitHub Issues: [Create an issue](https://github.com/yourusername/propellerai/issues)
 
 ## 🙏 Acknowledgments

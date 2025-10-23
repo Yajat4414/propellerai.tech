@@ -157,5 +157,28 @@
     ],
     "createdAt": "2025-10-23T10:54:46.914Z",
     "updatedAt": "2025-10-23T10:54:46.914Z"
+  },
+  "1761220142141": {
+    "id": "1761220142141",
+    "userId": "101715682346073977046",
+    "title": "Github Student Benefits Guide",
+    "personality": null,
+    "messages": [
+      {
+        "id": "1761220161826",
+        "role": "user",
+        "content": "hi there how can I get Github Student Education",
+        "attachments": [],
+        "timestamp": "2025-10-23T11:49:21.826Z"
+      },
+      {
+        "id": "1761220171557",
+        "role": "assistant",
+        "content": "Hi! To get the **GitHub Student Developer Pack** (which includes free access to premium tools and services), follow these steps:\n\n1. **Sign Up/Log In**: Have a GitHub account (or create one at [github.com](https://github.com)).\n2. **Apply Here**: Go to [GitHub Education](https://education.github.com/pack) and click *Get Student Benefits*.\n3. **Verify Status**: You’ll need:\n   - A school-issued email **OR**\n   - Proof of enrollment (e.g., student ID, class schedule, or official letter).\n4. **Submit & Wait**: GitHub typically reviews applications within a few days.\n\nOnce approved, you’ll get access to the pack, which includes free GitHub Pro, Heroku, Canva, and many other dev tools!\n\nLet me know if you need help with any step. 😊",
+        "timestamp": "2025-10-23T11:49:31.556Z"
+      }
+    ],
+    "createdAt": "2025-10-23T11:49:31.556Z",
+    "updatedAt": "2025-10-23T11:49:31.556Z"
   }
 }
