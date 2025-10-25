@@ -157,5 +157,74 @@
     ],
     "createdAt": "2025-10-23T11:49:31.556Z",
     "updatedAt": "2025-10-23T11:49:31.556Z"
+  },
+  "1761232116349": {
+    "id": "1761232116349",
+    "userId": "101715682346073977046",
+    "title": "Casual Greeting Exchange",
+    "personality": null,
+    "messages": [
+      {
+        "id": "1761232134076",
+        "role": "user",
+        "content": "hey there",
+        "attachments": [],
+        "timestamp": "2025-10-23T15:08:54.076Z"
+      },
+      {
+        "id": "1761232137435",
+        "role": "assistant",
+        "content": "Hey! How can I help you today? 😊",
+        "timestamp": "2025-10-23T15:08:57.434Z"
+      }
+    ],
+    "createdAt": "2025-10-23T15:08:57.478Z",
+    "updatedAt": "2025-10-23T15:08:57.490Z"
+  },
+  "1761308135115": {
+    "id": "1761308135115",
+    "userId": "101715682346073977046",
+    "title": "Sphere Radius Calculation",
+    "personality": null,
+    "messages": [
+      {
+        "id": "1761308799348",
+        "role": "user",
+        "content": "if surface area of sphere is 10.24π cm^2 , then find its radius",
+        "attachments": [],
+        "timestamp": "2025-10-24T12:26:39.348Z"
+      },
+      {
+        "id": "1761308807877",
+        "role": "assistant",
+        "content": "The surface area \\( A \\) of a sphere is given by the formula:\n\n\\[\nA = 4\\pi r^2\n\\]\n\nGiven \\( A = 10.24\\pi \\), we can solve for the radius \\( r \\):\n\n\\[\n10.24\\pi = 4\\pi r^2\n\\]\n\nDivide both sides by \\( 4\\pi \\):\n\n\\[\nr^2 = \\frac{10.24\\pi}{4\\pi} = 2.56\n\\]\n\nTake the square root of both sides:\n\n\\[\nr = \\sqrt{2.56} = 1.6 \\, \\text{cm}\n\\]\n\nThus, the radius is \\( 1.6 \\, \\text{cm} \\).",
+        "timestamp": "2025-10-24T12:26:47.876Z"
+      }
+    ],
+    "createdAt": "2025-10-24T12:26:47.876Z",
+    "updatedAt": "2025-10-24T12:26:47.876Z"
+  },
+  "1761395422891": {
+    "id": "1761395422891",
+    "userId": "101715682346073977046",
+    "title": "Best Refurbished Laptops Under 15k",
+    "personality": null,
+    "messages": [
+      {
+        "id": "1761395455741",
+        "role": "user",
+        "content": "hey there can you tell me the best refurbished laptop options to consider under 15k",
+        "attachments": [],
+        "timestamp": "2025-10-25T12:30:55.741Z"
+      },
+      {
+        "id": "1761395467483",
+        "role": "assistant",
+        "content": "Certainly! Here are some great refurbished laptop options under ₹15,000 in India, focusing on reliable brands and decent performance for basic tasks like browsing, office work, and light multimedia:\n\n### 1. **Lenovo ThinkPad Series (e.g., T430, T440)**\n   - **Why?** Known for durability, excellent keyboards, and solid performance.\n   - **Specs:** Intel Core i5, 4-8GB RAM, 128-256GB SSD.\n   - **Best For:** Productivity and office work.\n\n### 2. **Dell Latitude Series (e.g., E6440, E7440)**\n   - **Why?** Reliable build quality and good performance for the price.\n   - **Specs:** Intel Core i5, 4-8GB RAM, 128-256GB SSD.\n   - **Best For:** Everyday tasks and business use.\n\n### 3. **HP EliteBook Series (e.g., 840 G1, 8460p)**\n   - **Why?** Sleek design, good battery life, and decent performance.\n   - **Specs:** Intel Core i5, 4-8GB RAM, 128-256GB SSD.\n   - **Best For:** Portability and general use.\n\n### 4. **Acer Aspire Series (e.g., Aspire E5-573)**\n   - **Why?** Affordable and suitable for basic tasks.\n   - **Specs:** Intel Core i3/i5, 4GB RAM, 500GB HDD.\n   - **Best For:** Casual use and light multitasking.\n\n### 5. **Apple MacBook Air (Older Models, e.g., 2013-2015)**\n   - **Why?** Premium build, lightweight, and macOS smoothness.\n   - **Specs:** Intel Core i5, 4GB RAM, 128GB SSD.\n   - **Best For:** Students or those preferring macOS.\n\n### Tips for Buying Refurbished Laptops:\n1. **Check Warranty:** Ensure the laptop comes with at least 6-12 months of warranty.\n2. **Seller Reputation:** Buy from trusted sellers like Amazon Renewed, Flipkart Assured, or certified refurbishers.\n3. **Condition:** Look for \"Grade A\" or \"Like New\" condition for minimal wear.\n4. **Upgradeability:** Check if RAM and storage can be upgraded later.\n\nLet me know if you'd like more details on a specific model!",
+        "timestamp": "2025-10-25T12:31:07.482Z"
+      }
+    ],
+    "createdAt": "2025-10-25T12:31:07.482Z",
+    "updatedAt": "2025-10-25T12:31:07.482Z"
   }
 }
