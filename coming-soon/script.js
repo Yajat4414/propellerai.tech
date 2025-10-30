@@ -21,8 +21,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🚀 PropellerAI Coming Soon - Page loaded');
     
-    // Initialize EmailJS (uncomment and add your public key when ready)
-    // emailjs.init('YOUR_PUBLIC_KEY'); // Replace with your EmailJS public key
+    // Initialize EmailJS
+    emailjs.init('rPlGMNBXlRM7IyR2R'); // EmailJS Public Key
     
     try {
         initLoadingScreen();
@@ -331,8 +331,8 @@ async function sendEmailJSNotification(email) {
     
     try {
         const response = await emailjs.send(
-            'service_b6k02fq',  // Your service ID
-            'YOUR_TEMPLATE_ID',  // Replace with your EmailJS template ID
+            'service_b6k02fq',  // Service ID
+            'template_41mjaik',  // Template ID
             templateParams
         );
         
