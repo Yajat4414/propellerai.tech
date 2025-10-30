@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropellerAI - Coming Soon | Next-Generation AI Assistant</title>
+    <meta name="description" content="PropellerAI is your next-generation AI assistant. Smart chatting, image generation, and more - coming soon.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+    <!-- Loading Animation -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="spinner">
+            <img src="logo.png" alt="PropellerAI" class="spinner-logo">
+        </div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+                <div class="nav-content">
+            <a href="#hero" class="nav-logo">
+                <img src="logo.png" alt="PropellerAI Logo">
+                <span class="logo-text">PropellerAI</span>
+            </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <div class="hero-logo-container">
+                <div class="logo-glow"></div>
+                <img src="logo.png" alt="PropellerAI Logo" class="hero-logo">
+            </div>
+            
+            <h1 class="hero-title fade-in-up" style="animation-delay: 0.2s;">
+                Your Next-Generation AI Assistant is <span class="gradient-text">Almost Ready</span>
+            </h1>
+            
+            <p class="hero-subtitle fade-in-up" style="animation-delay: 0.4s;">
+                We're building a smarter, faster, and more human AI chat experience.
+            </p>
+
+            <!-- Progress Bar -->
+            <div class="progress-container fade-in-up" style="animation-delay: 0.6s;">
+                <div class="progress-header">
+                    <span class="progress-label">Development Progress</span>
+                    <span class="progress-percentage">85%</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" data-progress="85"></div>
+                </div>
+                <p class="progress-status">🚀 Launching Soon...</p>
+            </div>
+
+            <!-- CTA Button -->
+            <button class="cta-button fade-in-up" style="animation-delay: 0.8s;" onclick="scrollToWaitlist()">
+                <span>Join the Waitlist</span>
+                <svg class="cta-arrow" width="20" height="20" viewBox="0 0 20 20" fill="none">
+                    <path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator fade-in-up" style="animation-delay: 1s;">
+                <span>Scroll to explore</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 5v14m0 0l-7-7m7 7l7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <h2 class="section-title fade-in-up">What's PropellerAI?</h2>
+            <p class="section-description fade-in-up">
+                PropellerAI helps you chat, create, and explore ideas effortlessly. 
+                From coding help to creative writing — everything you need in one clean chat experience.
+            </p>
+
+            <div class="features-grid">
+                <div class="feature-card glass-card fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="feature-icon">💬</div>
+                    <h3 class="feature-title">Smart Chatting</h3>
+                    <p class="feature-description">Natural conversations with context-aware AI</p>
+                </div>
+
+                <div class="feature-card glass-card fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="feature-icon">🎨</div>
+                    <h3 class="feature-title">Image Generation</h3>
+                    <p class="feature-description">Create stunning visuals instantly</p>
+                </div>
+
+                <div class="feature-card glass-card fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="feature-icon">📱</div>
+                    <h3 class="feature-title">Mobile-First Design</h3>
+                    <p class="feature-description">Seamless experience across all devices</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sneak Peek Section -->
+    <section class="preview-section">
+        <div class="container">
+            <h2 class="section-title fade-in-up">Sneak Peek</h2>
+            <p class="section-description fade-in-up">Early UI Preview (Work in Progress)</p>
+
+            <div class="preview-grid">
+                <div class="preview-card fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="preview-mockup">
+                        <div class="mockup-browser">
+                            <div class="browser-header">
+                                <div class="browser-dots">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                                <div class="browser-url">propellerai.com</div>
+                            </div>
+                            <div class="mockup-content chat-preview">
+                                <!-- Desktop screenshot -->
+                                <img src="pc.jpg" alt="Desktop Chat Interface" class="screenshot-img" id="desktopScreenshot" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="screenshot-placeholder" style="display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; background:rgba(26,26,28,0.8);">
+                                    <div style="font-size:48px; margin-bottom:1rem;">📸</div>
+                                    <div style="font-size:1.2rem; font-weight:600; color:#10b981; margin-bottom:0.5rem;">Add Desktop Screenshot</div>
+                                    <div style="font-size:0.9rem; color:#6b7280; text-align:center; max-width:300px;">
+                                        Save as <code style="background:rgba(16,185,129,0.1); padding:0.2rem 0.5rem; border-radius:0.25rem; color:#10b981;">pc.jpg</code><br>
+                                        Size: 1200x600px or larger
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-caption">Chat Interface</p>
+                </div>
+
+                <div class="preview-card fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="preview-mockup">
+                        <div class="mockup-phone">
+                            <div class="phone-notch"></div>
+                            <div class="mockup-content mobile-preview">
+                                <!-- Mobile screenshot -->
+                                <img src="phone.png" alt="Mobile App Interface" class="screenshot-img" id="mobileScreenshot"
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="screenshot-placeholder" style="display:none; flex-direction:column; align-items:center; justify-content:center; height:100%; background:rgba(26,26,28,0.8); padding:1rem;">
+                                    <div style="font-size:36px; margin-bottom:0.75rem;">📱</div>
+                                    <div style="font-size:1rem; font-weight:600; color:#10b981; margin-bottom:0.5rem;">Add Mobile Screenshot</div>
+                                    <div style="font-size:0.8rem; color:#6b7280; text-align:center;">
+                                        Save as <code style="background:rgba(16,185,129,0.1); padding:0.2rem 0.4rem; border-radius:0.25rem; color:#10b981; font-size:0.75rem;">phone.png</code><br>
+                                        Size: 375x667px (iPhone)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-caption">Mobile App</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Highlight Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <h2 class="section-title fade-in-up">Future Features</h2>
+            <p class="section-description fade-in-up">Powerful capabilities designed for modern workflows</p>
+
+            <div class="feature-list">
+                <div class="feature-item glass-card fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="feature-item-icon">🧠</div>
+                    <div class="feature-item-content">
+                        <h3 class="feature-item-title">Smart Conversations</h3>
+                        <p class="feature-item-desc">Natural, fast, and context-aware replies powered by GPT models.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item glass-card fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="feature-item-icon">🖼️</div>
+                    <div class="feature-item-content">
+                        <h3 class="feature-item-title">Image Generation</h3>
+                        <p class="feature-item-desc">Create stunning visuals instantly using integrated AI image tools.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item glass-card fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="feature-item-icon">🧩</div>
+                    <div class="feature-item-content">
+                        <h3 class="feature-item-title">Custom Agents</h3>
+                        <p class="feature-item-desc">Build your own AI personalities and assistants easily.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item glass-card fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="feature-item-icon">🌐</div>
+                    <div class="feature-item-content">
+                        <h3 class="feature-item-title">Web Access</h3>
+                        <p class="feature-item-desc">Real-time web search for the latest information.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item glass-card fade-in-up" style="animation-delay: 0.5s;">
+                    <div class="feature-item-icon">📱</div>
+                    <div class="feature-item-content">
+                        <h3 class="feature-item-title">Mobile App</h3>
+                        <p class="feature-item-desc">Android and iOS versions launching soon.</p>
+                    </div>
+                </div>
+
+                <div class="feature-item glass-card fade-in-up" style="animation-delay: 0.6s;">
+                    <div class="feature-item-icon">🔒</div>
+                    <div class="feature-item-content">
+                        <h3 class="feature-item-title">Private & Secure</h3>
+                        <p class="feature-item-desc">Your data stays private and encrypted.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline Section -->
+    <section class="timeline-section" id="roadmap">
+        <div class="container">
+            <h2 class="section-title fade-in-up">Development Roadmap</h2>
+            <p class="section-description fade-in-up">Our journey to launch</p>
+
+            <div class="timeline">
+                <div class="timeline-item completed fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content glass-card">
+                        <div class="timeline-status">✅ Completed</div>
+                        <h3 class="timeline-title">Phase 1: UI & Backend</h3>
+                        <p class="timeline-desc">Modern interface design and Flask backend architecture</p>
+                        <span class="timeline-date">Q3 2024</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item active fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content glass-card">
+                        <div class="timeline-status">🧩 In Progress</div>
+                        <h3 class="timeline-title">Phase 2: AI Integration</h3>
+                        <p class="timeline-desc">Integrating GPT models and image generation APIs</p>
+                        <span class="timeline-date">Q4 2024</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item upcoming fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content glass-card">
+                        <div class="timeline-status">🚀 Coming Soon</div>
+                        <h3 class="timeline-title">Phase 3: Public Beta Launch</h3>
+                        <p class="timeline-desc">Open beta testing with early adopters</p>
+                        <span class="timeline-date">Q1 2025</span>
+                    </div>
+                </div>
+
+                <div class="timeline-item upcoming fade-in-up" style="animation-delay: 0.4s;">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content glass-card">
+                        <div class="timeline-status">🌍 Planned</div>
+                        <h3 class="timeline-title">Phase 4: Mobile App Rollout</h3>
+                        <p class="timeline-desc">iOS and Android native applications</p>
+                        <span class="timeline-date">Q2 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist Section -->
+    <section class="waitlist-section" id="waitlist">
+        <div class="container">
+            <div class="waitlist-card glass-card">
+                <h2 class="waitlist-title fade-in-up">Join the Journey</h2>
+                <p class="waitlist-subtitle fade-in-up">
+                    We're almost there — join the journey and be the first to experience PropellerAI.
+                </p>
+
+                <form class="waitlist-form fade-in-up" id="waitlistForm">
+                    <div class="input-group">
+                        <input type="email" class="waitlist-input" placeholder="Enter your email" required>
+                        <button type="submit" class="waitlist-submit">
+                            <span>Notify Me</span>
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="form-note">We'll notify you when PropellerAI launches.</p>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <img src="logo.png" alt="PropellerAI">
+                    <span>PropellerAI</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#features">Features</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="terms.html">Terms</a>
+                </div>
+                <div class="footer-copy">
+                    <p>© 2025 PropellerAI — Created by <span class="highlight">Yajat</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Chat Bubble (Easter Egg) -->
+    <div class="floating-bubble" id="floatingBubble">
+        <div class="bubble-content">
+            <p>👋 Hey there! Excited for launch?</p>
+        </div>
+    </div>
+
+    <!-- Easter Egg Modal -->
+    <div class="easter-egg-modal" id="easterEggModal">
+        <div class="modal-content glass-card">
+            <button class="modal-close" onclick="closeEasterEgg()">×</button>
+            <div class="modal-body">
+                <div class="easter-icon">🎉</div>
+                <h3>You're Early!</h3>
+                <p>Thanks for being so enthusiastic about PropellerAI.</p>
+                <p class="secret-message">Stay tuned for something amazing! 🚀</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

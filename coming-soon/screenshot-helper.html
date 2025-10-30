@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot Helper - PropellerAI</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0e1a;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #10b981;
+            font-size: 2rem;
+        }
+
+        .instructions {
+            background: rgba(26, 26, 28, 0.8);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .instructions h2 {
+            color: #10b981;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .instructions ol {
+            margin-left: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+
+        .instructions code {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.25rem;
+            color: #10b981;
+            font-family: monospace;
+        }
+
+        .screenshot-frame {
+            background: rgba(26, 26, 28, 0.9);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .frame-title {
+            color: #10b981;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .dimension-info {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .iframe-container {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #10b981;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mobile-container {
+            width: 375px;
+            height: 667px;
+            margin: 0 auto;
+            border: 2px solid #10b981;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+            color: #fbbf24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📸 Screenshot Helper for PropellerAI</h1>
+
+        <div class="instructions">
+            <h2>📋 Instructions</h2>
+            <ol>
+                <li>Open your PropellerAI chat page: <code>http://localhost:3000/chat.html</code> or your deployed URL</li>
+                <li>Use the frames below to take screenshots at the correct dimensions</li>
+                <li><strong>Desktop Screenshot:</strong> 
+                    <ul>
+                        <li>Navigate to your chat page in the desktop frame below</li>
+                        <li>Use browser dev tools (F12) or screenshot tool to capture</li>
+                        <li>Recommended size: 1200x600px or larger</li>
+                        <li>Save as <code>desktop-screenshot.png</code></li>
+                    </ul>
+                </li>
+                <li><strong>Mobile Screenshot:</strong>
+                    <ul>
+                        <li>Use browser dev tools to set device to iPhone or custom 375x667px</li>
+                        <li>Or use the mobile frame below</li>
+                        <li>Capture the mobile view</li>
+                        <li>Save as <code>mobile-screenshot.png</code></li>
+                    </ul>
+                </li>
+                <li>Place both images in <code>/coming-soon/</code> folder</li>
+                <li>Refresh the coming-soon page to see your screenshots!</li>
+            </ol>
+        </div>
+
+        <!-- Desktop Frame -->
+        <div class="screenshot-frame">
+            <div class="frame-title">🖥️ Desktop View (1200x600)</div>
+            <div class="dimension-info">Recommended screenshot area</div>
+            <div class="iframe-container">
+                <iframe src="http://localhost:3000/chat.html" title="Desktop Preview"></iframe>
+            </div>
+            <div class="buttons">
+                <button class="btn" onclick="openInNewTab('desktop')">Open in New Tab</button>
+            </div>
+        </div>
+
+        <!-- Mobile Frame -->
+        <div class="screenshot-frame">
+            <div class="frame-title">📱 Mobile View (375x667 - iPhone)</div>
+            <div class="dimension-info">iPhone SE/8 dimensions</div>
+            <div class="mobile-container">
+                <iframe src="http://localhost:3000/chat.html" title="Mobile Preview"></iframe>
+            </div>
+            <div class="buttons">
+                <button class="btn" onclick="openInNewTab('mobile')">Open in New Tab</button>
+                <button class="btn btn-secondary" onclick="toggleMobileSize()">Toggle Size (iPhone X)</button>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>⚠️ Note:</strong> If you're not running a local server, replace the iframe src URLs with your deployed URL. You can also just use browser dev tools (F12 → Toggle Device Toolbar) to resize your browser and take screenshots directly.
+        </div>
+
+        <div class="instructions" style="margin-top: 2rem;">
+            <h2>🎯 Best Screenshot Practices</h2>
+            <ol>
+                <li><strong>Clean the UI:</strong> Remove any test data, ensure chat looks professional</li>
+                <li><strong>Good Lighting:</strong> Make sure the emerald theme (#10b981) is visible</li>
+                <li><strong>Show Key Features:</strong> Display chat messages, sidebar, etc.</li>
+                <li><strong>No Personal Data:</strong> Don't include any real user information</li>
+                <li><strong>High Quality:</strong> Use PNG format for best quality</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function openInNewTab(type) {
+            const url = type === 'desktop' 
+                ? 'http://localhost:3000/chat.html'
+                : 'http://localhost:3000/chat.html';
+            
+            if (type === 'mobile') {
+                // Open in a smaller window
+                window.open(url, 'mobile', 'width=375,height=667,resizable=yes,scrollbars=yes');
+            } else {
+                window.open(url, '_blank');
+            }
+        }
+
+        function toggleMobileSize() {
+            const mobileContainer = document.querySelector('.mobile-container');
+            if (mobileContainer.style.width === '414px') {
+                // Switch to iPhone SE
+                mobileContainer.style.width = '375px';
+                mobileContainer.style.height = '667px';
+                document.querySelector('.mobile-container + .buttons').previousElementSibling.querySelector('.dimension-info').textContent = 'iPhone SE/8 dimensions';
+            } else {
+                // Switch to iPhone X
+                mobileContainer.style.width = '414px';
+                mobileContainer.style.height = '896px';
+                document.querySelector('.mobile-container + .buttons').previousElementSibling.querySelector('.dimension-info').textContent = 'iPhone X/11 dimensions';
+            }
+        }
+
+        // Update iframe sources if server is running on different port
+        const urlParams = new URLSearchParams(window.location.search);
+        const baseUrl = urlParams.get('url') || 'http://localhost:3000';
+        
+        document.querySelectorAll('iframe').forEach(iframe => {
+            iframe.src = baseUrl + '/chat.html';
+        });
+    </script>
+</body>
+</html>
